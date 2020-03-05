@@ -5,3 +5,8 @@
 build
 /bin/
 /gradle/
+/target/
+/.settings/
+.classpath
+.project
+.gitignore
