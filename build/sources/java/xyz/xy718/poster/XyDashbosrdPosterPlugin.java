@@ -34,10 +34,10 @@ id = XyDashbosrdPosterPlugin.PLUGIN_ID
 , description = XyDashbosrdPosterPlugin.DESCRIPTION
 )
 public class XyDashbosrdPosterPlugin {
-	@Getter public static final String PLUGIN_ID = "@id@";
-	@Getter public static final String NAME = "@name@";
-	@Getter public static final String VERSION = "@version@";
-	@Getter public static final String DESCRIPTION = "@description@";
+	@Getter public static final String PLUGIN_ID = "xydashboardposter";
+	@Getter public static final String NAME = "XyDashboardPoster";
+	@Getter public static final String VERSION = "0.0.1-SNAPSHOT-Test";
+	@Getter public static final String DESCRIPTION = "一个简单的仪表盘数据推送插件";
 	
 
 	private static XyDashbosrdPosterPlugin instance;

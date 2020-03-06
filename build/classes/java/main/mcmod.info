@@ -1,0 +1,14 @@
+[
+    {
+        "modid": "xydashboardposter",
+        "name": "XyDashboardPoster",
+        "version": "0.0.1-SNAPSHOT-Test",
+        "description": "一个简单的仪表盘数据推送插件",
+        "dependencies": [
+            "spongeapi@7.1.0"
+        ],
+        "requiredMods": [
+            "spongeapi@7.1.0"
+        ]
+    }
+]
