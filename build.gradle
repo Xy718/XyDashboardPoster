@@ -32,6 +32,7 @@ repositories {
 }
 
 dependencies {
+	compile 'cn.hutool:hutool-all:5.1.5'
     compileOnly 'org.spongepowered:spongeapi:7.1.0'
     annotationProcessor 'org.spongepowered:spongeapi:7.1.0'
 	compileOnly 'org.projectlombok:lombok:1.18.6'

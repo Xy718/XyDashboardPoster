@@ -15,4 +15,8 @@ public class WorldData {
 		this.worldUUID=wUuid;
 		this.chunkCount=cCount;
 	}
+	
+	public String toString() {
+		return worldName+":"+worldUUID.toString()+":"+chunkCount;
+	}
 }

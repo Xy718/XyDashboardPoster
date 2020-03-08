@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.LocaleUtils;
 import org.slf4j.Logger;
@@ -16,8 +17,17 @@ import org.spongepowered.api.event.game.GameReloadEvent;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
 import org.spongepowered.api.event.game.state.GamePreInitializationEvent;
 import org.spongepowered.api.event.game.state.GameStartedServerEvent;
+import org.spongepowered.api.item.inventory.Inventory;
+import org.spongepowered.api.item.inventory.InventoryArchetype;
+import org.spongepowered.api.item.inventory.InventoryArchetypes;
+import org.spongepowered.api.item.inventory.InventoryProperty;
+import org.spongepowered.api.item.inventory.property.InventoryDimension;
+import org.spongepowered.api.item.inventory.property.InventoryTitle;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginContainer;
+import org.spongepowered.api.scheduler.Task;
+import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.format.TextColors;
 
 import com.google.inject.Inject;
 
@@ -26,6 +36,7 @@ import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
 import xyz.xy718.poster.config.I18N;
 import xyz.xy718.poster.config.XyDashboardPosterConfig;
+import xyz.xy718.poster.schedule.WorldDataPoster;
 
 @Plugin(
 id = XyDashbosrdPosterPlugin.PLUGIN_ID
@@ -36,7 +47,7 @@ id = XyDashbosrdPosterPlugin.PLUGIN_ID
 public class XyDashbosrdPosterPlugin {
 	@Getter public static final String PLUGIN_ID = "xydashboardposter";
 	@Getter public static final String NAME = "XyDashboardPoster";
-	@Getter public static final String VERSION = "0.0.1-SNAPSHOT-Test";
+	@Getter public static final String VERSION = "0.0.1-SNAPSHOT-b11";
 	@Getter public static final String DESCRIPTION = "一个简单的仪表盘数据推送插件";
 	
 
@@ -46,16 +57,19 @@ public class XyDashbosrdPosterPlugin {
 	
 	@Inject
 	private PluginContainer container;
+	/*
 	@Inject
     @ConfigDir(sharedRoot = false)
-    private Path getdropsConfigPath;
+    private Path configPath;
 	
 	@Inject
 	@DefaultConfig(sharedRoot = false)
 	private ConfigurationLoader<CommentedConfigurationNode> configLoader;
 
 	private static XyDashboardPosterConfig mainConfig;
-
+*/
+	private static PosterManager posterManager;
+	
     public XyDashbosrdPosterPlugin() {
     	if (instance != null)
 			throw new IllegalStateException();
@@ -64,29 +78,10 @@ public class XyDashbosrdPosterPlugin {
 	
     @Listener
     public void onGamePreStarting(GamePreInitializationEvent event) {
-    	LOGGER.info("服务器启动中,先加载配置~");
-        // init config
-        if (!Files.exists(getdropsConfigPath)) {
-            try {
-                Files.createDirectories(getdropsConfigPath);
-            } catch (IOException e) {
-                LOGGER.error("Failed to create main config directory: {}",getdropsConfigPath);
-                LOGGER.error(e.toString());
-            }
-        }
-    	mainConfig=new XyDashboardPosterConfig(instance,getdropsConfigPath);
-    	LOGGER.info("{}当前版本{}",NAME,VERSION);
+    	LOGGER.info("服务器启动中,先加载配置与语言文件~");
+    	//loadConfig();
     	
-    	 // init i18n service
-        I18N.setLogger(LOGGER);
-        I18N.setPlugin(this);
-        String localeStr = mainConfig.getNode("lang").getString();
-        if (localeStr == null || localeStr.isEmpty()) {
-            localeStr = "zh_CN";
-        }
-        Locale locale = LocaleUtils.toLocale(localeStr);
-        I18N.setLocale(locale);
-        
+        //loadI18N();
     }
 
     @Listener
@@ -96,6 +91,7 @@ public class XyDashbosrdPosterPlugin {
     @Listener
     public void onServerStart(GameStartedServerEvent event) {
     	LOGGER.info("服务器启动成功，{}也开始工作了~",NAME);
+    	posterManager=new PosterManager(instance);
     }
     
     @Listener
@@ -110,11 +106,43 @@ public class XyDashbosrdPosterPlugin {
     public PluginContainer getContainer() {
         return container;
     }
-    public static XyDashboardPosterConfig getConfig() {
-    	return mainConfig;
-    }
 
 	public Path getConfigDir() {
-		return getdropsConfigPath;
+		//return configPath;
+		return null;
 	}
+	/*
+	/**
+	 * 加载配置文件
+	 
+	private void loadConfig() {
+        // init config
+        if (!Files.exists(configPath)) {
+            try {
+                Files.createDirectories(configPath);
+            } catch (IOException e) {
+                LOGGER.error("Failed to create main config directory: {}",configPath);
+                LOGGER.error(e.toString());
+            }
+        }
+    	mainConfig=new XyDashboardPosterConfig(instance,configPath);
+    	LOGGER.info("{}当前版本{}",NAME,VERSION);
+	}
+
+	/**
+	 * 加载语言文件
+	 
+	private void loadI18N() {
+   	 // init i18n service
+        I18N.setLogger(LOGGER);
+        I18N.setPlugin(this);
+        String localeStr = mainConfig.getNode("lang").getString();
+        if (localeStr == null || localeStr.isEmpty()) {
+            localeStr = "zh_CN";
+        }
+        Locale locale = LocaleUtils.toLocale(localeStr);
+        I18N.setLocale(locale);
+	}
+
+	*/
 }
