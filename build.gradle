@@ -33,6 +33,7 @@ repositories {
 
 dependencies {
 	compile 'cn.hutool:hutool-all:5.1.5'
+	compile 'org.influxdb:influxdb-java:2.10'
     compileOnly 'org.spongepowered:spongeapi:7.1.0'
     annotationProcessor 'org.spongepowered:spongeapi:7.1.0'
 	compileOnly 'org.projectlombok:lombok:1.18.6'

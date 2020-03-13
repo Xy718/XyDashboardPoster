@@ -5,7 +5,7 @@ import java.util.UUID;
 import lombok.Data;
 
 @Data
-public class WorldData {
+public class WorldData extends Grafdata{
 
 	String 	worldName;
 	UUID 	worldUUID;

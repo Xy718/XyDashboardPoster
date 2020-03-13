@@ -36,7 +36,7 @@ import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
 import xyz.xy718.poster.config.I18N;
 import xyz.xy718.poster.config.XyDashboardPosterConfig;
-import xyz.xy718.poster.schedule.WorldDataPoster;
+import xyz.xy718.poster.graf.WorldDatagraf;
 
 @Plugin(
 id = XyDashbosrdPosterPlugin.PLUGIN_ID
@@ -68,7 +68,7 @@ public class XyDashbosrdPosterPlugin {
 
 	private static XyDashboardPosterConfig mainConfig;
 */
-	private static PosterManager posterManager;
+	@Getter private static PosterManager posterManager;
 	
     public XyDashbosrdPosterPlugin() {
     	if (instance != null)

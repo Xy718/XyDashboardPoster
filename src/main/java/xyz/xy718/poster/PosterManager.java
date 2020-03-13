@@ -2,13 +2,25 @@ package xyz.xy718.poster;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Timer;
 
-import xyz.xy718.poster.schedule.Poster;
-import xyz.xy718.poster.schedule.WorldDataPoster;
+import xyz.xy718.poster.graf.DatagrafMethod;
+import xyz.xy718.poster.graf.WorldDatagraf;
+import xyz.xy718.poster.graf.Xydatagraf;
 
 public class PosterManager {
-	private static Map<String, Poster> posterList=new HashMap<String, Poster>();
+	private DataPoster dataPoster;
+	private Xydatagraf datagraf;
+	
 	public PosterManager(XyDashbosrdPosterPlugin plugin) {
-		posterList.put("123", new WorldDataPoster(plugin)); 
+		datagraf=new Xydatagraf(plugin);
+		dataPoster=new DataPoster(plugin);
+	}
+	
+	public void stopPost() {
+		
+	}
+	public void startPost() {
+	
 	}
 }
