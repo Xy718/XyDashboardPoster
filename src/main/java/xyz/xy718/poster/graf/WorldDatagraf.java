@@ -1,6 +1,8 @@
 package xyz.xy718.poster.graf;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
@@ -23,7 +25,7 @@ public class WorldDatagraf extends Datagraf implements DatagrafMethod{
 	private Timer taskTimer;
 	
 	public WorldDatagraf(XyDashbosrdPosterPlugin plugin) {
-		dataList=new ArrayList<Object>();
+		dataList=new ArrayList<String>();
 		runFlag=false;
 		startPoster();
 	}
@@ -54,18 +56,20 @@ public class WorldDatagraf extends Datagraf implements DatagrafMethod{
 	}
 	
 	private void task() {
+		taskTimer=new Timer();
 		taskTimer.schedule(new TimerTask() {
             @Override
             public void run() {
         		runFlag=true;
             	long startTime=System.currentTimeMillis();
-				LOGGER.info("记录世界区块数量");
-				SpongeDataService.getWorldInfo().forEach(w->
-					LOGGER.info(w.toString())
-				);
+				SpongeDataService.getWorldInfo().forEach(w->{
+					LOGGER.info("记录世界{}的区块数量:{}",w.getWorldName(),w.toString());
+					//在收集器中放入数据
+					dataList.add(w.toString());
+				});
 				LOGGER.info("Timer耗时："+(System.currentTimeMillis()-startTime)+"ms");
             }
-        }, 3000, 3000);
+        }, 3000, 700);
 	}
 
 

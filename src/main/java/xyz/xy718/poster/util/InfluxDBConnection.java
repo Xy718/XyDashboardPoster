@@ -45,26 +45,6 @@ public class InfluxDBConnection {
 	}
 
 	/**
-	 * 创建数据库
-	 * 
-	 * @param dbName
-	 */
-	@SuppressWarnings("deprecation")
-	public void createDB(String dbName) {
-		influxDB.createDatabase(dbName);
-	}
-
-	/**
-	 * 删除数据库
-	 * 
-	 * @param dbName
-	 */
-	@SuppressWarnings("deprecation")
-	public void deleteDB(String dbName) {
-		influxDB.deleteDatabase(dbName);
-	}
-
-	/**
 	 * 测试连接是否正常
 	 * 
 	 * @return true 正常
@@ -92,16 +72,7 @@ public class InfluxDBConnection {
 		if (influxDB == null) {
 			influxDB = InfluxDBFactory.connect(openurl, username, password);
 		}
-		try {
-			// if (!influxDB.databaseExists(database)) {
-			// influxDB.createDatabase(database);
-			// }
-		} catch (Exception e) {
-			// 该数据库可能设置动态代理，不支持创建数据库
-			// e.printStackTrace();
-		} finally {
-			influxDB.setRetentionPolicy(retentionPolicy);
-		}
+		influxDB.setRetentionPolicy(retentionPolicy);
 		influxDB.setLogLevel(InfluxDB.LogLevel.NONE);
 		return influxDB;
 	}
