@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.spongepowered.api.scheduler.Task;
 
 import xyz.xy718.poster.XyDashbosrdPosterPlugin;
+import xyz.xy718.poster.model.Grafdata;
 import xyz.xy718.poster.model.WorldData;
 import xyz.xy718.poster.service.SpongeDataService;
 
@@ -25,8 +26,9 @@ public class WorldDatagraf extends Datagraf implements DatagrafMethod{
 	private Timer taskTimer;
 	
 	public WorldDatagraf(XyDashbosrdPosterPlugin plugin) {
-		dataList=new ArrayList<String>();
+		dataList=new ArrayList<Grafdata>();
 		runFlag=false;
+		measurement="world";
 		startPoster();
 	}
 	
@@ -63,9 +65,9 @@ public class WorldDatagraf extends Datagraf implements DatagrafMethod{
         		runFlag=true;
             	long startTime=System.currentTimeMillis();
 				SpongeDataService.getWorldInfo().forEach(w->{
-					LOGGER.info("记录世界{}的区块数量:{}",w.getWorldName(),w.toString());
+					LOGGER.info("记录世界{}的区块数量:{}",w.getWorldName(),w.getChunkCount());
 					//在收集器中放入数据
-					dataList.add(w.toString());
+					dataList.add(w);
 				});
 				LOGGER.info("Timer耗时："+(System.currentTimeMillis()-startTime)+"ms");
             }

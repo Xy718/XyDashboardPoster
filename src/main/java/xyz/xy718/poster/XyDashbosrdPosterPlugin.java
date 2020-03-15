@@ -37,6 +37,7 @@ import ninja.leaping.configurate.loader.ConfigurationLoader;
 import xyz.xy718.poster.config.I18N;
 import xyz.xy718.poster.config.XyDashboardPosterConfig;
 import xyz.xy718.poster.graf.WorldDatagraf;
+import xyz.xy718.poster.util.InfluxDBConnection;
 
 @Plugin(
 id = XyDashbosrdPosterPlugin.PLUGIN_ID
@@ -69,6 +70,7 @@ public class XyDashbosrdPosterPlugin {
 	private static XyDashboardPosterConfig mainConfig;
 */
 	@Getter private static PosterManager posterManager;
+	@Getter private static InfluxDBConnection influxDB;
 	
     public XyDashbosrdPosterPlugin() {
     	if (instance != null)
@@ -86,7 +88,8 @@ public class XyDashbosrdPosterPlugin {
 
     @Listener
     public void onGameStarting(GameInitializationEvent event) {
-    	LOGGER.info("配置加载完成,{}开始注册事件与指令~",NAME);
+    	LOGGER.info("配置加载完成,{}开始连接数据库~",NAME);
+    	influxDB=new InfluxDBConnection("root", "123456", "http://localhost:8086", "mcserver", "30d");
 	}
     @Listener
     public void onServerStart(GameStartedServerEvent event) {
