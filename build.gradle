@@ -34,16 +34,20 @@ repositories {
 }
 
 dependencies {
-	compile 'cn.hutool:hutool-core:5.2.3'
+	compile 'com.squareup.okhttp3:okhttp:3.6.0'
+	compile 'com.squareup.retrofit2:retrofit:2.3.0'
 	compile 'org.influxdb:influxdb-java:2.10'
     compileOnly 'org.spongepowered:spongeapi:7.1.0'
     annotationProcessor 'org.spongepowered:spongeapi:7.1.0'
 	compileOnly 'org.projectlombok:lombok:1.18.6'
 	annotationProcessor 'org.projectlombok:lombok:1.18.6'
 }
+/*
 shadowJar {
     classifier = ""
     dependencies {
-        include(dependency("cn.hutool:hutool-core:5.2.3:withDependencies"))
+        include(dependency('com.squareup.okhttp3:okhttp:3.6.0'))
+        include(dependency('com.squareup.retrofit2:retrofit:2.3.0'))
+        include(dependency('org.influxdb:influxdb-java:2.10'))
     }
-}
+}*/

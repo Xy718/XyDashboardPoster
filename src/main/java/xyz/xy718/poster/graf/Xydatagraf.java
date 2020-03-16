@@ -6,14 +6,13 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import cn.hutool.core.util.RandomUtil;
 import xyz.xy718.poster.XyDashbosrdPosterPlugin;
 import xyz.xy718.poster.model.Grafdata;
 
 public class Xydatagraf {
 	//数据收集器列表<收集器名,收集器>
 	private static Map<String, Datagraf> grafList=new HashMap<String, Datagraf>();
-	//<数据表名<测点ID，测点数据>>
+	//数据列表<数据表名<测点ID，测点对象>>
 	private static Map<String,Map<Integer, Grafdata>> dataList=new HashMap<String , Map<Integer, Grafdata>>();
 	
 	public Xydatagraf(XyDashbosrdPosterPlugin plugin) {
@@ -29,7 +28,9 @@ public class Xydatagraf {
 			for(int i=0;i<grafData.size();i++) {
 				points.put(i, grafData.get(i));
 			}
-			dataList.put(graf.measurement,points);
+			if(!points.isEmpty()) {
+				dataList.put(graf.measurement,points);
+			}
 			graf.clearData();
 		});
 		return dataList;

@@ -4,11 +4,15 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import lombok.Getter;
+
 public class Grafdata {
-	String rfc3339_date_time_string;
-	String measurement;
-	Map<String, String> tagMap=new HashMap<>();
-	Map<String, String> fieldMap=new HashMap<>();
+	@Getter long time;
+	@Getter String measurement;
+	@Getter Map<String, String> tagMap=new HashMap<>();
+	@Getter Map<String, Object> fieldMap=new HashMap<>();
+	
+	
 	
 	/**
 	 * 将收集的数据转换为influxDB写入字符串<br>
@@ -22,11 +26,11 @@ public class Grafdata {
 			retS+=","+tag.getKey()+"="+tag.getValue();
 		}
 		retS+=" ";      
-		for(Entry<String, String> field:fieldMap.entrySet()) {
+		for(Entry<String, Object> field:fieldMap.entrySet()) {
 			retS+=field.getKey()+"="+field.getValue()+",";
 		}
 		retS=retS.substring(0,retS.length()-1);
-		retS+=" '"+this.rfc3339_date_time_string+"'";
+		retS+=" '"+this.time+"'";
 		return retS;
 	}
 }

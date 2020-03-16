@@ -17,10 +17,10 @@ public class PosterManager {
 		dataPoster=new DataPoster(plugin);
 	}
 	
-	public void stopPost() {
+	public static void stopAllPoster() {
 		
 	}
-	public void startPost() {
-	
+	public static void stopAllGraf() {
+		
 	}
 }
