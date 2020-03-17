@@ -10,61 +10,36 @@ import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.spongepowered.api.scheduler.Task;
 
-import xyz.xy718.poster.XyDashbosrdPosterPlugin;
+import xyz.xy718.poster.XyDashboardPosterPlugin;
 import xyz.xy718.poster.model.Grafdata;
 import xyz.xy718.poster.model.WorldData;
-import xyz.xy718.poster.service.SpongeDataService;
+import xyz.xy718.poster.service.WorldDataService;
 
 /**
  * 用于收集世界相关的监测内容
  * @author Xy718
  *
  */
-public class WorldDatagraf extends Datagraf implements DatagrafMethod{
+public class WorldDatagraf extends Datagraf{
 
-	private final Logger LOGGER=XyDashbosrdPosterPlugin.LOGGER;
-	private Timer taskTimer;
+	private final Logger LOGGER=XyDashboardPosterPlugin.LOGGER;
 	
-	public WorldDatagraf(XyDashbosrdPosterPlugin plugin) {
+	public WorldDatagraf(XyDashboardPosterPlugin plugin) {
 		dataList=new ArrayList<Grafdata>();
 		runFlag=false;
 		measurement="world";
 		startPoster();
 	}
 	
-
-	@Override
-	public void startPoster() {
-		if(this.runFlag) {
-			//如果已启动
-			return;
-		}
-		task();
-	}
-
-	@Override
-	public void endPost() {
-		if(!this.runFlag) {
-			//如果未启动
-			return;
-		}
-		this.taskTimer.cancel();
-		this.runFlag=false;
-	}
-
-	@Override
-	public Timer getPoster() {
-		return this.taskTimer;
-	}
 	
-	private void task() {
+	public void task() {
 		taskTimer=new Timer();
 		taskTimer.schedule(new TimerTask() {
             @Override
             public void run() {
         		runFlag=true;
             	long startTime=System.currentTimeMillis();
-				SpongeDataService.getWorldInfo().forEach(w->{
+				WorldDataService.getWorldInfo().forEach(w->{
 					LOGGER.info("记录世界{}的区块数量:{}",w.getWorldName(),w.getChunkCount());
 					//在收集器中放入数据
 					dataList.add(w);
@@ -73,11 +48,4 @@ public class WorldDatagraf extends Datagraf implements DatagrafMethod{
             }
         }, 3000, 700);
 	}
-
-
-	@Override
-	public String getInfluxPostData() {
-		return null;
-	}
-	
 }

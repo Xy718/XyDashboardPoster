@@ -5,7 +5,7 @@ import org.slf4j.Logger;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.serializer.TextSerializers;
 
-import xyz.xy718.poster.XyDashbosrdPosterPlugin;
+import xyz.xy718.poster.XyDashboardPosterPlugin;
 
 import java.io.File;
 import java.io.IOException;
@@ -32,7 +32,7 @@ import java.util.ResourceBundle;
 public class I18N {
     private static Logger logger = null;
     private static I18N ins = null;
-    private static XyDashbosrdPosterPlugin plugin;
+    private static XyDashboardPosterPlugin plugin;
     private static String assetsName = "i18n";
 
     private ResourceBundle rb;
@@ -40,7 +40,7 @@ public class I18N {
 
     private I18N(Locale locale) {
         this.rb = getCustomBundle(assetsName, locale);
-        this.assetRb = ResourceBundle.getBundle("assets."+XyDashbosrdPosterPlugin.getPLUGIN_ID()+"." + assetsName, locale);
+        this.assetRb = ResourceBundle.getBundle("assets."+XyDashboardPosterPlugin.getPLUGIN_ID()+"." + assetsName, locale);
     }
 
     static public I18N getInstance() {
@@ -93,7 +93,7 @@ public class I18N {
         ins = new I18N(locale);
     }
 
-    static public void setPlugin(XyDashbosrdPosterPlugin plugin) {
+    static public void setPlugin(XyDashboardPosterPlugin plugin) {
         I18N.plugin = plugin;
     }
 

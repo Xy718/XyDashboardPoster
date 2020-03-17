@@ -8,20 +8,26 @@ import org.spongepowered.api.Sponge;
 import org.spongepowered.api.world.Chunk;
 import org.spongepowered.api.world.World;
 
+import xyz.xy718.poster.XyDashboardPosterPlugin;
+import xyz.xy718.poster.config.XyDashboardPosterConfig;
 import xyz.xy718.poster.model.WorldData;
 
-public class SpongeDataService {
+public class WorldDataService {
 
 	/**
-	 * 获取世界地图信息
+	 * 获取世界加载区块信息
 	 * @return
 	 */
 	public static List<WorldData> getWorldInfo() {
+		XyDashboardPosterConfig config=XyDashboardPosterPlugin.getMainConfig();
 		List<WorldData> wd=new ArrayList<WorldData>();
 		for(World w:Sponge.getServer().getWorlds()){
 			List<Chunk> testL=(List<Chunk>) w.getLoadedChunks();
-			wd.add(new WorldData(w.getUniqueId(), w.getName(), testL.size()));
+			wd.add(new WorldData(w.getUniqueId(), w.getName(), testL.size(),config.getTbNameWorld()));
 		};
 		return wd;
 	}
+	
+	//TODO 获取每个世界的实体数量
+	//TODO 获取每个世界的玩家数量
 }

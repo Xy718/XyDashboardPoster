@@ -40,25 +40,25 @@ import xyz.xy718.poster.graf.WorldDatagraf;
 import xyz.xy718.poster.util.InfluxDBConnection;
 
 @Plugin(
-id = XyDashbosrdPosterPlugin.PLUGIN_ID
-, name = XyDashbosrdPosterPlugin.NAME
-, version = XyDashbosrdPosterPlugin.VERSION
-, description = XyDashbosrdPosterPlugin.DESCRIPTION
+id = XyDashboardPosterPlugin.PLUGIN_ID
+, name = XyDashboardPosterPlugin.NAME
+, version = XyDashboardPosterPlugin.VERSION
+, description = XyDashboardPosterPlugin.DESCRIPTION
 )
-public class XyDashbosrdPosterPlugin {
+public class XyDashboardPosterPlugin {
 	@Getter public static final String PLUGIN_ID = "@id@";
 	@Getter public static final String NAME = "@name@";
 	@Getter public static final String VERSION = "@version@";
 	@Getter public static final String DESCRIPTION = "@description@";
 	
 
-	private static XyDashbosrdPosterPlugin instance;
+	private static XyDashboardPosterPlugin instance;
 	
 	public static final Logger LOGGER = LoggerFactory.getLogger(NAME);
 	
 	@Inject
 	private PluginContainer container;
-	/*
+
 	@Inject
     @ConfigDir(sharedRoot = false)
     private Path configPath;
@@ -67,12 +67,12 @@ public class XyDashbosrdPosterPlugin {
 	@DefaultConfig(sharedRoot = false)
 	private ConfigurationLoader<CommentedConfigurationNode> configLoader;
 
-	private static XyDashboardPosterConfig mainConfig;
-*/
+	@Getter private static XyDashboardPosterConfig mainConfig;
+
 	@Getter private static PosterManager posterManager;
 	@Getter private static InfluxDBConnection influxDB;
 	
-    public XyDashbosrdPosterPlugin() {
+    public XyDashboardPosterPlugin() {
     	if (instance != null)
 			throw new IllegalStateException();
 		instance = this;
@@ -81,15 +81,21 @@ public class XyDashbosrdPosterPlugin {
     @Listener
     public void onGamePreStarting(GamePreInitializationEvent event) {
     	LOGGER.info("服务器启动中,先加载配置与语言文件~");
-    	//loadConfig();
+    	loadConfig();
     	
-        //loadI18N();
+        loadI18N();
     }
 
     @Listener
     public void onGameStarting(GameInitializationEvent event) {
     	LOGGER.info("配置加载完成,{}开始连接数据库~",NAME);
-    	influxDB=new InfluxDBConnection("root", "123456", "http://localhost:8086", "mcserver", "30d");
+    	influxDB=new InfluxDBConnection(
+    			mainConfig.getUser()
+    			,mainConfig.getPassword()
+    			,mainConfig.getHost()+":"+mainConfig.getPort()
+    			,mainConfig.getDatabase()
+    			,mainConfig.getRetention_policy()
+    			);
 	}
     @Listener
     public void onServerStart(GameStartedServerEvent event) {
@@ -101,7 +107,7 @@ public class XyDashbosrdPosterPlugin {
     public void onPluginsReload(GameReloadEvent event) {
     	LOGGER.warn("{}重新加载~",NAME);
     }
-	public static XyDashbosrdPosterPlugin get() {
+	public static XyDashboardPosterPlugin get() {
 		if (instance == null)
 			throw new IllegalStateException("Instance not available");
 		return instance;
@@ -111,13 +117,11 @@ public class XyDashbosrdPosterPlugin {
     }
 
 	public Path getConfigDir() {
-		//return configPath;
-		return null;
+		return configPath;
 	}
-	/*
 	/**
 	 * 加载配置文件
-	 
+	 */
 	private void loadConfig() {
         // init config
         if (!Files.exists(configPath)) {
@@ -134,18 +138,16 @@ public class XyDashbosrdPosterPlugin {
 
 	/**
 	 * 加载语言文件
-	 
+	 */
 	private void loadI18N() {
    	 // init i18n service
         I18N.setLogger(LOGGER);
         I18N.setPlugin(this);
-        String localeStr = mainConfig.getNode("lang").getString();
+        String localeStr = mainConfig.getNode("general").getNode("lang").getString();
         if (localeStr == null || localeStr.isEmpty()) {
             localeStr = "zh_CN";
         }
         Locale locale = LocaleUtils.toLocale(localeStr);
         I18N.setLocale(locale);
 	}
-
-	*/
 }

@@ -6,17 +6,24 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import xyz.xy718.poster.XyDashbosrdPosterPlugin;
+import xyz.xy718.poster.XyDashboardPosterPlugin;
+import xyz.xy718.poster.config.XyDashboardPosterConfig;
 import xyz.xy718.poster.model.Grafdata;
 
-public class Xydatagraf {
+public class XydatagrafManager {
+	private static XyDashboardPosterConfig config=XyDashboardPosterPlugin.getMainConfig();
 	//数据收集器列表<收集器名,收集器>
 	private static Map<String, Datagraf> grafList=new HashMap<String, Datagraf>();
 	//数据列表<数据表名<测点ID，测点对象>>
 	private static Map<String,Map<Integer, Grafdata>> dataList=new HashMap<String , Map<Integer, Grafdata>>();
 	
-	public Xydatagraf(XyDashbosrdPosterPlugin plugin) {
-		grafList.put("123", new WorldDatagraf(plugin)); 
+	public XydatagrafManager(XyDashboardPosterPlugin plugin) {
+		//装载数据收集器集合
+		//死亡if
+		if(config.isUseWorldGraf()) {
+			//启用世界数据收集
+			grafList.put("WorldDatagraf", new WorldDatagraf(plugin)); 
+		}
 	}
 	
 	public static Map<String, Map<Integer, Grafdata>> putData() {

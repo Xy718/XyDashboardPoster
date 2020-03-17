@@ -4,16 +4,15 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Timer;
 
-import xyz.xy718.poster.graf.DatagrafMethod;
 import xyz.xy718.poster.graf.WorldDatagraf;
-import xyz.xy718.poster.graf.Xydatagraf;
+import xyz.xy718.poster.graf.XydatagrafManager;
 
 public class PosterManager {
 	private DataPoster dataPoster;
-	private Xydatagraf datagraf;
+	private XydatagrafManager datagraf;
 	
-	public PosterManager(XyDashbosrdPosterPlugin plugin) {
-		datagraf=new Xydatagraf(plugin);
+	public PosterManager(XyDashboardPosterPlugin plugin) {
+		datagraf=new XydatagrafManager(plugin);
 		dataPoster=new DataPoster(plugin);
 	}
 	
