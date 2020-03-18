@@ -74,7 +74,7 @@ public class DataPoster {
 					
 				}
 				// 将数据批量插入到数据库中
-				influxDBConnection.batchInsert(config.getDatabase(),config.getRetention_policy(), ConsistencyLevel.ALL, records);
+ 				influxDBConnection.batchInsert(config.getDatabase(),config.getRetention_policy(), ConsistencyLevel.ALL, records);
 				LOGGER.info("耗时:{}ms",(System.currentTimeMillis()-startTime));
 			}
 		},config.getPost_internal()*1000,config.getPost_internal()*1000);

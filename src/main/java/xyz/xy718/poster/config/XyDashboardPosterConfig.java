@@ -52,6 +52,12 @@ public class XyDashboardPosterConfig {
 	@Getter private String tbNameWorld;
 	//区块数量信息是否收集
 	@Getter private boolean useChunkCount;
+	//区块数据采集间隔(秒)
+	@Getter private double grafChunkCountInternal;
+	//实体数量信息收集
+	@Getter private boolean useEntityCount;
+	//实体数量信息数据采集间隔(秒)
+	@Getter private double grafEntityCountInternal;
 	
 	
 	// formmater:on
@@ -90,6 +96,10 @@ public class XyDashboardPosterConfig {
             this.useWorldGraf=this.mainNode.getNode("modules").getNode("world").getBoolean(false);
             this.tbNameWorld=this.mainNode.getNode("world").getNode("measurement-name").getString("world");
             this.useChunkCount=this.mainNode.getNode("world").getNode("chunk-count").getBoolean(false);
+            this.grafChunkCountInternal=this.mainNode.getNode("world").getNode("raf-chunk-count-internal").getDouble(1.5);
+            this.useEntityCount=this.mainNode.getNode("world").getNode("entity-count").getBoolean(false);
+            this.grafEntityCountInternal=this.mainNode.getNode("world").getNode("graf-entity-count-internal").getDouble(1);
+            
         } catch (IOException e) {
             e.printStackTrace();
             LOGGER.warn("reload failed: {}", mainConfName);

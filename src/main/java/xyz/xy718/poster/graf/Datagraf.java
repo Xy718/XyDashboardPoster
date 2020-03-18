@@ -1,43 +1,71 @@
 package xyz.xy718.poster.graf;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Timer;
+import java.util.TimerTask;
 
 import lombok.Getter;
+import xyz.xy718.poster.graf.Datagraf.Work;
 import xyz.xy718.poster.model.Grafdata;
 
 public class Datagraf {
-	boolean runFlag;
 	@Getter String measurement;
-	@Getter public List<Grafdata> dataList;
+	@Getter public List<Grafdata> dataList=new ArrayList<Grafdata>();
 	@Getter String grafname;
 
-	Timer taskTimer;
+	Map<String, Timer> taskTimers=new HashMap<String, Timer>();
+	Map<String, Boolean> taskRunStatus=new HashMap<>();
+	
+	/**
+	 * 清空已收集的数据
+	 */
 	public void clearData() {
 		this.dataList.clear();
 	}
-	public void startPoster() {
-		if(this.runFlag) {
-			//如果已启动
+	/**
+	 * 开始一个收集任务
+	 * @param taskName
+	 * @param taskBody
+	 */
+	public void startTask(String taskName,Timer taskBody) {
+		if(this.taskRunStatus.get(taskName)==null) {
 			return;
 		}
-		task();
-	}
-
-	public void endPost() {
-		if(!this.runFlag) {
-			//如果未启动
+		if(this.taskRunStatus.get(taskName)) {
 			return;
 		}
-		this.taskTimer.cancel();
-		this.runFlag=false;
+		this.taskTimers.put(taskName, taskBody);
+		this.taskRunStatus.put(taskName, true);
+	}
+	/**
+	 * 停止一个收集任务
+	 * @param taskName
+	 */
+	public void endTask(String taskName) {
+		if(this.taskRunStatus.get(taskName)==null) {
+			return;
+		}
+		if(!this.taskRunStatus.get(taskName)) {
+			return;
+		}
+		this.taskRunStatus.put(taskName, false);
+		taskTimers.get(taskName).cancel();
 	}
 
-	public Timer getPoster() {
-		return this.taskTimer;
+	interface Work{
+		void work();
 	}
 	
-	public void task() {
-		
+	protected static TimerTask getTask(Work w) {
+		TimerTask task=new TimerTask() {
+            @Override
+            public void run() {
+            	w.work();
+            }
+        };
+        return task;
 	}
 }
