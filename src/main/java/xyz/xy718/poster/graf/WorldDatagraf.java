@@ -24,16 +24,16 @@ public class WorldDatagraf extends Datagraf{
 		measurement="world";
 		//死亡if她又来了
 		if(config.isUseWorldGraf()) {
-			Timer taskTimer=new Timer();
-			taskTimer.schedule(WorldDatagraf.getTask(new ChunkCount())
-					, (long)(config.getGrafChunkCountInternal()*1000),(long)(config.getGrafChunkCountInternal()*1000));
-			startTask("chunk-count", taskTimer);
+			buildTask("chunk-count"
+					, new ChunkCount()
+					,(long)(config.getGrafChunkCountInternal()*1000)
+					,(long)(config.getGrafChunkCountInternal()*1000));
 		}
 		if(config.isUseEntityCount()) {
-			Timer taskTimer=new Timer();
-			taskTimer.schedule(WorldDatagraf.getTask(new EntityCount())
-					, (long)(config.getGrafEntityCountInternal()*1000),(long)(config.getGrafEntityCountInternal()*1000));
-			startTask("entity-count", taskTimer);
+			buildTask("entity-count"
+					, new EntityCount()
+					,(long)(config.getGrafEntityCountInternal()*1000)
+					,(long)(config.getGrafEntityCountInternal()*1000));
 		}
 	}
 

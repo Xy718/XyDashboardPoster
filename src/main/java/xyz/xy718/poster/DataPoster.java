@@ -21,13 +21,13 @@ import xyz.xy718.poster.util.InfluxDBConnection;
 
 public class DataPoster {
 
-	private Timer datagrafTask;
+	private Timer posterTask;
 	private static final Logger LOGGER=XyDashboardPosterPlugin.LOGGER;
 	private static XyDashboardPosterConfig config=XyDashboardPosterPlugin.getMainConfig();
 	
 	public DataPoster(XyDashboardPosterPlugin plugin) {
-		datagrafTask=new Timer();
-		datagrafTask.schedule(new TimerTask() {
+		posterTask=new Timer();
+		posterTask.schedule(new TimerTask() {
 			
 			@Override
 			public void run() {

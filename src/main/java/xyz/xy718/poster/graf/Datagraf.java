@@ -8,6 +8,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import lombok.Getter;
+import xyz.xy718.poster.graf.WorldDatagraf.EntityCount;
 import xyz.xy718.poster.model.Grafdata;
 
 public class Datagraf {
@@ -24,6 +25,22 @@ public class Datagraf {
 	public void clearData() {
 		this.dataList.clear();
 	}
+	
+	/**
+	 * 创建，并开始一个收集任务
+	 * @param name
+	 * @param work
+	 * @param delay
+	 * @param period
+	 */
+	public void buildTask(String name,Work work,long delay,long period) {
+		Timer taskTimer=new Timer();
+		taskTimer.schedule(
+				Datagraf.getTask(work)
+				, delay,period);
+		startTask(name, taskTimer);
+	}
+	
 	/**
 	 * 开始一个收集任务
 	 * @param taskName
