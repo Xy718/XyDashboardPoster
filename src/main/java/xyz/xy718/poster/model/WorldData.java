@@ -1,10 +1,6 @@
 package xyz.xy718.poster.model;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.UUID;
-
-import lombok.Data;
 
 public class WorldData extends Grafdata{
 

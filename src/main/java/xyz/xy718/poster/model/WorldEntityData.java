@@ -17,7 +17,7 @@ public class WorldEntityData extends Grafdata{
 		return	this.tagMap.get("world_name");
 	}
 
-	public String getChunkCount() {
-		return	this.fieldMap.get("chunk_count")+"";
+	public String getEntityCount() {
+		return	this.fieldMap.get("entity_count")+"";
 	}
 }

@@ -8,7 +8,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import lombok.Getter;
-import xyz.xy718.poster.graf.Datagraf.Work;
 import xyz.xy718.poster.model.Grafdata;
 
 public class Datagraf {
@@ -54,7 +53,24 @@ public class Datagraf {
 		this.taskRunStatus.put(taskName, false);
 		taskTimers.get(taskName).cancel();
 	}
-
+	/**
+	 * 输出该graf的数据的Influxdb格式<br>
+	 *<数据表名< tag对象，grafdata列表>>
+	 * @return
+	 */
+	public Map<Map<String, String>, List<Grafdata>> getInfluxData() {
+		Map<Map<String, String>, List<Grafdata>> data=new HashMap<>();
+		dataList.forEach(grafdata ->{
+			if(data.get(grafdata.getTagMap())==null) {
+				//如果不存在这个tag
+				data.put(grafdata.getTagMap(), new ArrayList<>());
+			}
+			//在这个tag下放入数据
+			data.get(grafdata.getTagMap()).add(grafdata);
+		});
+		return data;
+	}
+	
 	interface Work{
 		void work();
 	}

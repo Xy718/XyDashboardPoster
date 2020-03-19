@@ -84,20 +84,20 @@ public class XyDashboardPosterConfig {
 	public void reload() {
         try {
         	//主节点(总配置)
-            this.mainNode = this.configLoader.load();
-            this.post_internal=this.mainNode.getNode("general").getNode("post-internal").getInt(10);
-            this.data_center_type=this.mainNode.getNode("general").getNode("data-center-type").getString("InfluxDB");
-            this.host=this.mainNode.getNode("data-center").getNode("host").getString("http://localhost");
-            this.port=this.mainNode.getNode("data-center").getNode("port").getString("8086");
-            this.user=this.mainNode.getNode("data-center").getNode("user").getString("root");
-            this.password=this.mainNode.getNode("data-center").getNode("password").getString("123456");
-            this.database=this.mainNode.getNode("data-center").getNode("database").getString("mcserver");
-            this.retention_policy=this.mainNode.getNode("data-center").getNode("retention-policy").getString("default");
-            this.useWorldGraf=this.mainNode.getNode("modules").getNode("world").getBoolean(false);
-            this.tbNameWorld=this.mainNode.getNode("world").getNode("measurement-name").getString("world");
-            this.useChunkCount=this.mainNode.getNode("world").getNode("chunk-count").getBoolean(false);
-            this.grafChunkCountInternal=this.mainNode.getNode("world").getNode("raf-chunk-count-internal").getDouble(1.5);
-            this.useEntityCount=this.mainNode.getNode("world").getNode("entity-count").getBoolean(false);
+            this.mainNode 				=this.configLoader.load();
+            this.post_internal			=this.mainNode.getNode("general").getNode("post-internal").getInt(10);
+            this.data_center_type		=this.mainNode.getNode("general").getNode("data-center-type").getString("InfluxDB");
+            this.host					=this.mainNode.getNode("data-center").getNode("host").getString("http://localhost");
+            this.port					=this.mainNode.getNode("data-center").getNode("port").getString("8086");
+            this.user					=this.mainNode.getNode("data-center").getNode("user").getString("root");
+            this.password				=this.mainNode.getNode("data-center").getNode("password").getString("123456");
+            this.database				=this.mainNode.getNode("data-center").getNode("database").getString("mcserver");
+            this.retention_policy		=this.mainNode.getNode("data-center").getNode("retention-policy").getString("default");
+            this.useWorldGraf			=this.mainNode.getNode("modules").getNode("world").getBoolean(false);
+            this.tbNameWorld			=this.mainNode.getNode("world").getNode("measurement-name").getString("world");
+            this.useChunkCount			=this.mainNode.getNode("world").getNode("chunk-count").getBoolean(false);
+            this.grafChunkCountInternal	=this.mainNode.getNode("world").getNode("raf-chunk-count-internal").getDouble(1.5);
+            this.useEntityCount			=this.mainNode.getNode("world").getNode("entity-count").getBoolean(false);
             this.grafEntityCountInternal=this.mainNode.getNode("world").getNode("graf-entity-count-internal").getDouble(1);
             
         } catch (IOException e) {

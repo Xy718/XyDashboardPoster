@@ -1,8 +1,6 @@
 package xyz.xy718.poster.graf;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -14,8 +12,8 @@ public class XydatagrafManager {
 	private static XyDashboardPosterConfig config=XyDashboardPosterPlugin.getMainConfig();
 	//数据收集器列表<收集器名,收集器>
 	private static Map<String, Datagraf> grafList=new HashMap<String, Datagraf>();
-	//数据列表<数据表名<测点ID，测点对象>>
-	private static Map<String,Map<Integer, Grafdata>> dataList=new HashMap<String , Map<Integer, Grafdata>>();
+	//数据列表<数据表名<tag对象，grafdata列表>>
+	private static Map<String,Map<Map<String,String>, List<Grafdata>>> dataList=new HashMap<>();
 	
 	public XydatagrafManager(XyDashboardPosterPlugin plugin) {
 		//装载数据收集器集合
@@ -25,18 +23,29 @@ public class XydatagrafManager {
 			grafList.put("WorldDatagraf", new WorldDatagraf(plugin)); 
 		}
 	}
-	
-	public static Map<String, Map<Integer, Grafdata>> putData() {
+	/*
+world
+	tags1
+		List<data>1
+	tags2
+		List<data>2
+player
+
+server
+	 */
+	/**
+	 * 装载数据！<br>
+	 * <数据表名<tag对象，grafdata列表>>
+	 * @return
+	 */
+	public static Map<String,Map<Map<String,String>, List<Grafdata>>> putData() {
 		dataList.clear();
 		//根据每个收集器创建测点Map集合
 		grafList.forEach((grafName,graf) -> {
-			Map<Integer, Grafdata> points=new HashMap<>();//测点集合
-			List<Grafdata> grafData=graf.getDataList();
-			for(int i=0;i<grafData.size();i++) {
-				points.put(i, grafData.get(i));
-			}
-			if(!points.isEmpty()) {
-				dataList.put(graf.measurement,points);
+			//先拿到这个graf的所有数据集合
+			if(config.getData_center_type().equals("InfluxDB")) {
+				//如果是InfluxDB
+				dataList.put(graf.measurement, graf.getInfluxData());
 			}
 			graf.clearData();
 		});

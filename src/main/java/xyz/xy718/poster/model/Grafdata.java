@@ -1,17 +1,16 @@
 package xyz.xy718.poster.model;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import lombok.Getter;
-import xyz.xy718.poster.XyDashboardPosterPlugin;
-import xyz.xy718.poster.config.XyDashboardPosterConfig;
 
 public class Grafdata {
 	@Getter long time;
 	@Getter String measurement;
-	@Getter Map<String, String> tagMap=new HashMap<>();
+	@Getter Map<String, String> tagMap=new LinkedHashMap<>();
 	@Getter Map<String, Object> fieldMap=new HashMap<>();
 	
 	

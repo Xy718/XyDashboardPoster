@@ -1,8 +1,6 @@
 package xyz.xy718.poster;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -11,6 +9,7 @@ import java.util.TimerTask;
 
 import org.influxdb.InfluxDB.ConsistencyLevel;
 import org.influxdb.dto.BatchPoints;
+import org.influxdb.dto.BatchPoints.Builder;
 import org.influxdb.dto.Point;
 import org.slf4j.Logger;
 
@@ -22,13 +21,11 @@ import xyz.xy718.poster.util.InfluxDBConnection;
 
 public class DataPoster {
 
-	private static Map<String, Object> inSendMessage;
 	private Timer datagrafTask;
 	private static final Logger LOGGER=XyDashboardPosterPlugin.LOGGER;
 	private static XyDashboardPosterConfig config=XyDashboardPosterPlugin.getMainConfig();
 	
 	public DataPoster(XyDashboardPosterPlugin plugin) {
-		inSendMessage=new LinkedHashMap<String, Object>();
 		datagrafTask=new Timer();
 		datagrafTask.schedule(new TimerTask() {
 			
@@ -37,47 +34,52 @@ public class DataPoster {
 				// TODO DataPoster发送数据
 				long startTime=System.currentTimeMillis();
 				//从graf管理器装载数据
-				Map<String, Map<Integer, Grafdata>> grafdatas=XydatagrafManager.putData();
+				Map<String,Map<Map<String,String>, List<Grafdata>>> grafdatas=XydatagrafManager.putData();
 				int i=0;
-				for(Entry<String, Map<Integer, Grafdata>> v:grafdatas.entrySet()) {
-					for(Entry<Integer, Grafdata> v2:v.getValue().entrySet()) {
-						i++;
-						LOGGER.info("===="+v2.getKey()+"---"+v2.getValue().toInfluxDB());
+				for(Entry<String, Map<Map<String, String>, List<Grafdata>>> v:grafdatas.entrySet()) {
+					for(Entry<Map<String, String>, List<Grafdata>> v2:v.getValue().entrySet()) {
+						i+=v2.getValue().size();
 					}
 				}
-				LOGGER.info("====发送{}了条数据:",i);
 				//如果是空的
 				if(grafdatas.isEmpty()) {
 					return;
 				}
 				//分采集器写入TSDB
 				InfluxDBConnection influxDBConnection = XyDashboardPosterPlugin.getInfluxDB();
-				
 				List<String> records = new ArrayList<String>();
-				//每个数据表
-				for(Entry<String, Map<Integer, Grafdata>> graf:grafdatas.entrySet()) {
-					BatchPoints batchPoints = BatchPoints.database(config.getDatabase())
-							.retentionPolicy(config.getRetention_policy()).consistency(ConsistencyLevel.ALL).build();
-					//该数据表下的所有数据
-					for(Entry<Integer, Grafdata> data:graf.getValue().entrySet()) {
-						Map<String, String> tags = data.getValue().getTagMap();
-						Map<String, Object> fields = data.getValue().getFieldMap();
-						// 一条记录值
-						Point point = influxDBConnection.pointBuilder(
-								data.getValue().getMeasurement(),data.getValue().getTime(), tags, fields);
-						// 将记录添加到batchPoints中
-						batchPoints.point(point);
+				
+				//每个measurement
+				for(Entry<String, Map<Map<String, String>, List<Grafdata>>> measurement:grafdatas.entrySet()) {
+					//每个tags
+					for(Entry<Map<String, String>, List<Grafdata>> tags:measurement.getValue().entrySet()) {
+						Builder batchbuilder = BatchPoints.database(config.getDatabase());
+						//装载Tags
+						tags.getKey().forEach((k,v)->batchbuilder.tag(k, v));
+						BatchPoints batchPoints = batchbuilder
+								.retentionPolicy(config.getRetention_policy()).consistency(ConsistencyLevel.ALL).build();
+						//装载所有fields
+						for(Grafdata data:tags.getValue()) {
+							Map<String, String> t = data.getTagMap();
+							Map<String, Object> f = data.getFieldMap();
+							// 一条记录值
+							Point point = influxDBConnection.pointBuilder(
+									data.getMeasurement(),data.getTime(), t, f);
+							// 将记录添加到batchPoints中
+							batchPoints.point(point);
+						}
+						
+						// 将不同的batchPoints序列化后，一次性写入数据库，提高写入速度
+						records.add(batchPoints.lineProtocol());
 					}
-					
-					// 将不同的batchPoints序列化后，一次性写入数据库，提高写入速度
-					records.add(batchPoints.lineProtocol());
-					
 				}
+				
 				// 将数据批量插入到数据库中
  				influxDBConnection.batchInsert(config.getDatabase(),config.getRetention_policy(), ConsistencyLevel.ALL, records);
-				LOGGER.info("耗时:{}ms",(System.currentTimeMillis()-startTime));
+				LOGGER.info("推送{}条数据耗时:{}ms",i,(System.currentTimeMillis()-startTime));
+				
 			}
-		},config.getPost_internal()*1000,config.getPost_internal()*1000);
+		},(long)(config.getPost_internal()*1000),(long)(config.getPost_internal()*1000));
 	}
 
 }

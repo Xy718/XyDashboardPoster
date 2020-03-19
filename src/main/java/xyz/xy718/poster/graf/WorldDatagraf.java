@@ -1,21 +1,14 @@
 package xyz.xy718.poster.graf;
 
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.TimeUnit;
-import java.util.function.Consumer;
-import java.util.function.Function;
 
 import org.slf4j.Logger;
-import org.spongepowered.api.scheduler.Task;
 
 import xyz.xy718.poster.XyDashboardPosterPlugin;
 import xyz.xy718.poster.config.XyDashboardPosterConfig;
-import xyz.xy718.poster.model.Grafdata;
 import xyz.xy718.poster.model.WorldData;
+import xyz.xy718.poster.model.WorldEntityData;
 import xyz.xy718.poster.service.WorldDataService;
 
 /**
@@ -48,16 +41,28 @@ public class WorldDatagraf extends Datagraf{
 		@Override
 		public void work() {
 			long startTime=System.currentTimeMillis();
-			dataList.addAll(WorldDataService.getWorldInfo());
-			LOGGER.info("Timer耗时："+(System.currentTimeMillis()-startTime)+"ms");
+			List<WorldData> data=WorldDataService.getWorldInfo();
+			dataList.addAll(data);
+			String logs="区块数量";
+			for(WorldData w:data){
+				logs+="-"+w.getWorldName()+":"+w.getChunkCount();
+			}
+			LOGGER.info(logs);
+			LOGGER.info("区块数量收集耗时："+(System.currentTimeMillis()-startTime)+"ms");
 		}
 	}
 	class EntityCount implements Work{
 		@Override
 		public void work() {
 			long startTime=System.currentTimeMillis();
+			List<WorldEntityData> data=WorldDataService.getWorldEntityInfo();
 			dataList.addAll(WorldDataService.getWorldEntityInfo());
-			LOGGER.info("Timer耗时："+(System.currentTimeMillis()-startTime)+"ms");
+			String logs="实体数量";
+			for(WorldEntityData w:data){
+				logs+="-"+w.getWorldName()+":"+w.getEntityCount();
+			}
+			LOGGER.info(logs);
+			LOGGER.info("实体数量收集耗时："+(System.currentTimeMillis()-startTime)+"ms");
 		}
 	}
 }
