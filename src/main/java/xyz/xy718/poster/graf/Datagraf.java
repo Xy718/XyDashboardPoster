@@ -60,14 +60,15 @@ public class Datagraf {
 	 */
 	public Map<Map<String, String>, List<Grafdata>> getInfluxData() {
 		Map<Map<String, String>, List<Grafdata>> data=new HashMap<>();
-		dataList.forEach(grafdata ->{
-			if(data.get(grafdata.getTagMap())==null) {
+		List<Grafdata> dataList=this.dataList;
+		for(int i=0;i<dataList.size();i++) {
+			if(data.get(dataList.get(i).getTagMap())==null) {
 				//如果不存在这个tag
-				data.put(grafdata.getTagMap(), new ArrayList<>());
+				data.put(dataList.get(i).getTagMap(), new ArrayList<>());
 			}
 			//在这个tag下放入数据
-			data.get(grafdata.getTagMap()).add(grafdata);
-		});
+			data.get(dataList.get(i).getTagMap()).add(dataList.get(i));
+		}
 		return data;
 	}
 	
