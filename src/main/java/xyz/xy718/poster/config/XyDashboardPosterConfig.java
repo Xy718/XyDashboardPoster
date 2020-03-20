@@ -46,7 +46,7 @@ public class XyDashboardPosterConfig {
 	//InfluxDB的保留策略
 	@Getter private String retention_policy;
 
-	//世界信息收集是否启用
+	/**世界信息收集是否启用*/
 	@Getter private boolean useWorldGraf;
 	//表名
 	@Getter private String tbNameWorld;
@@ -58,6 +58,15 @@ public class XyDashboardPosterConfig {
 	@Getter private boolean useEntityCount;
 	//实体数量信息数据采集间隔(秒)
 	@Getter private double grafEntityCountInternal;
+	
+	/**服务器信息收集是否启用*/
+	@Getter private boolean useServerGraf;
+	//表名
+	@Getter private String tbNameServer;
+	//TPS信息是否收集
+	@Getter private boolean useTPS;
+	//TPS数据采集间隔(秒)
+	@Getter private double grafTPSInternal;
 	
 	
 	// formmater:on
@@ -93,12 +102,19 @@ public class XyDashboardPosterConfig {
             this.password				=this.mainNode.getNode("data-center").getNode("password").getString("123456");
             this.database				=this.mainNode.getNode("data-center").getNode("database").getString("mcserver");
             this.retention_policy		=this.mainNode.getNode("data-center").getNode("retention-policy").getString("default");
+            //模块启用
             this.useWorldGraf			=this.mainNode.getNode("modules").getNode("world").getBoolean(false);
+            this.useServerGraf			=this.mainNode.getNode("modules").getNode("server").getBoolean(false);
+            
             this.tbNameWorld			=this.mainNode.getNode("world").getNode("measurement-name").getString("world");
             this.useChunkCount			=this.mainNode.getNode("world").getNode("chunk-count").getBoolean(false);
             this.grafChunkCountInternal	=this.mainNode.getNode("world").getNode("raf-chunk-count-internal").getDouble(1.5);
             this.useEntityCount			=this.mainNode.getNode("world").getNode("entity-count").getBoolean(false);
             this.grafEntityCountInternal=this.mainNode.getNode("world").getNode("graf-entity-count-internal").getDouble(1);
+            
+            this.tbNameServer			=this.mainNode.getNode("server").getNode("measurement-name").getString("world");
+            this.useTPS					=this.mainNode.getNode("server").getNode("tps").getBoolean(false);
+            this.grafTPSInternal		=this.mainNode.getNode("server").getNode("graf-tps-internal").getDouble(3);
             
         } catch (IOException e) {
             e.printStackTrace();

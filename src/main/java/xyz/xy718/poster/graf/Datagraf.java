@@ -28,7 +28,7 @@ public class Datagraf {
 	
 	/**
 	 * 创建，并开始一个收集任务
-	 * @param name
+	 * @param name 收集器名称
 	 * @param work
 	 * @param delay
 	 * @param period

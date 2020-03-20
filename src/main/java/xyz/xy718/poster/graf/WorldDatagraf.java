@@ -1,7 +1,6 @@
 package xyz.xy718.poster.graf;
 
 import java.util.List;
-import java.util.Timer;
 
 import org.slf4j.Logger;
 
@@ -21,7 +20,7 @@ public class WorldDatagraf extends Datagraf{
 	private final Logger LOGGER=XyDashboardPosterPlugin.LOGGER;
 	private static XyDashboardPosterConfig config=XyDashboardPosterPlugin.getMainConfig();
 	public WorldDatagraf(XyDashboardPosterPlugin plugin) {
-		measurement="world";
+		this.measurement="world";
 		//死亡if她又来了
 		if(config.isUseWorldGraf()) {
 			buildTask("chunk-count"
@@ -41,7 +40,7 @@ public class WorldDatagraf extends Datagraf{
 		@Override
 		public void work() {
 			long startTime=System.currentTimeMillis();
-			List<WorldData> data=WorldDataService.getWorldInfo();
+			List<WorldData> data=WorldDataService.getWorldInfo(config.getTbNameWorld());
 			dataList.addAll(data);
 			String logs="区块数量";
 			for(WorldData w:data){
@@ -55,8 +54,8 @@ public class WorldDatagraf extends Datagraf{
 		@Override
 		public void work() {
 			long startTime=System.currentTimeMillis();
-			List<WorldEntityData> data=WorldDataService.getWorldEntityInfo();
-			dataList.addAll(WorldDataService.getWorldEntityInfo());
+			List<WorldEntityData> data=WorldDataService.getWorldEntityInfo(config.getTbNameWorld());
+			dataList.addAll(data);
 			String logs="实体数量";
 			for(WorldEntityData w:data){
 				logs+="-"+w.getWorldName()+":"+w.getEntityCount();

@@ -22,6 +22,10 @@ public class XydatagrafManager {
 			//启用世界数据收集
 			grafList.put("WorldDatagraf", new WorldDatagraf(plugin)); 
 		}
+		if(config.isUseServerGraf()) {
+			//启用服务器数据收集
+			grafList.put("ServerDatagraf", new ServerDatagraf(plugin)); 
+		}
 	}
 	/*
 world
@@ -35,7 +39,7 @@ server
 	 */
 	/**
 	 * 装载数据！<br>
-	 * <数据表名<tag对象，grafdata列表>>
+	 * Map< 数据表名< tag对象，grafdata列表>>
 	 * @return
 	 */
 	public static Map<String,Map<Map<String,String>, List<Grafdata>>> putData() {
