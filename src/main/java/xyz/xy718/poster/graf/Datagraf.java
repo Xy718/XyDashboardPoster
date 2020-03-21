@@ -7,7 +7,10 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import org.spongepowered.api.Sponge;
+
 import lombok.Getter;
+import xyz.xy718.poster.XyDashboardPosterPlugin;
 import xyz.xy718.poster.graf.WorldDatagraf.EntityCount;
 import xyz.xy718.poster.model.Grafdata;
 
@@ -90,6 +93,7 @@ public class Datagraf {
 	}
 	
 	interface Work{
+		String workName();
 		void work();
 	}
 	
@@ -97,6 +101,10 @@ public class Datagraf {
 		TimerTask task=new TimerTask() {
             @Override
             public void run() {
+            	if(!Sponge.isServerAvailable()) {
+            		this.cancel();
+            		XyDashboardPosterPlugin.LOGGER.info("由于服务器已关闭，收集器:{}已停止收集工作",w.workName());
+            	}
             	w.work();
             }
         };

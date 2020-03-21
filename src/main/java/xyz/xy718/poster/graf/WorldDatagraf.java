@@ -6,7 +6,7 @@ import org.slf4j.Logger;
 
 import xyz.xy718.poster.XyDashboardPosterPlugin;
 import xyz.xy718.poster.config.XyDashboardPosterConfig;
-import xyz.xy718.poster.model.WorldData;
+import xyz.xy718.poster.model.WorldChunkCountData;
 import xyz.xy718.poster.model.WorldEntityData;
 import xyz.xy718.poster.service.WorldDataService;
 
@@ -38,14 +38,19 @@ public class WorldDatagraf extends Datagraf{
 		@Override
 		public void work() {
 			long startTime=System.currentTimeMillis();
-			List<WorldData> data=WorldDataService.getWorldInfo(config.getTbNameWorld());
+			List<WorldChunkCountData> data=WorldDataService.getWorldInfo(config.getTbNameWorld());
 			dataList.addAll(data);
 			String logs="区块数量";
-			for(WorldData w:data){
+			for(WorldChunkCountData w:data){
 				logs+="-"+w.getWorldName()+":"+w.getChunkCount();
 			}
 			XyDashboardPosterPlugin.configLogger(logs);
 			XyDashboardPosterPlugin.configLogger("区块数量收集耗时："+(System.currentTimeMillis()-startTime)+"ms");
+		}
+
+		@Override
+		public String workName() {
+			return "world-chunk-count";
 		}
 	}
 	class EntityCount implements Work{
@@ -60,6 +65,11 @@ public class WorldDatagraf extends Datagraf{
 			}
 			XyDashboardPosterPlugin.configLogger(logs);
 			XyDashboardPosterPlugin.configLogger("实体数量收集耗时："+(System.currentTimeMillis()-startTime)+"ms");
+		}
+
+		@Override
+		public String workName() {
+			return "world-entity-count";
 		}
 	}
 }

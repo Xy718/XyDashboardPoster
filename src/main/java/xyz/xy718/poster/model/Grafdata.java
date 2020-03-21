@@ -13,7 +13,10 @@ public class Grafdata {
 	@Getter Map<String, String> tagMap=new LinkedHashMap<>();
 	@Getter Map<String, Object> fieldMap=new HashMap<>();
 	
-	
+	public Grafdata(String measurement) {
+		this.measurement=measurement;
+		this.time=System.currentTimeMillis();
+	}
 	/**
 	 * 将收集的数据转换为influxDB写入字符串<br>
 	 * 每个对象对应单个Point

@@ -1,12 +1,11 @@
 package xyz.xy718.poster.model;
 
-public class ServerData extends Grafdata{
+public class ServerTPSData extends Grafdata{
 
-	public ServerData(double ticksPerSecond, String measurement) {
-		this.measurement=measurement;
+	public ServerTPSData(double ticksPerSecond, String measurement) {
+		super(measurement);
 		this.tagMap.put("type", "tps");
 		this.fieldMap.put("tps", ticksPerSecond);
-		this.time=System.currentTimeMillis();
 	}
 
 	public String getServerTPS() {
