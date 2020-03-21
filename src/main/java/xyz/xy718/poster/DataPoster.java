@@ -22,7 +22,6 @@ import xyz.xy718.poster.util.InfluxDBConnection;
 public class DataPoster {
 
 	private Timer posterTask;
-	private static final Logger LOGGER=XyDashboardPosterPlugin.LOGGER;
 	private static XyDashboardPosterConfig config=XyDashboardPosterPlugin.getMainConfig();
 	
 	public DataPoster(XyDashboardPosterPlugin plugin) {
@@ -76,7 +75,7 @@ public class DataPoster {
 				
 				// 将数据批量插入到数据库中
  				influxDBConnection.batchInsert(config.getDatabase(),config.getRetention_policy(), ConsistencyLevel.ALL, records);
-				LOGGER.info("推送{}条数据耗时:{}ms",i,(System.currentTimeMillis()-startTime));
+ 				XyDashboardPosterPlugin.configLogger("推送{}条数据耗时:{}ms",i,(System.currentTimeMillis()-startTime));
 				
 			}
 		},(long)(config.getPost_internal()*1000),(long)(config.getPost_internal()*1000));

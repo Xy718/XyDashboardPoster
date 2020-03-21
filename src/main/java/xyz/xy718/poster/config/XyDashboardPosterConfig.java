@@ -32,6 +32,8 @@ public class XyDashboardPosterConfig {
 	@Getter private int post_internal;
 	/** 数据中心类型*/
 	@Getter private String data_center_type;
+	/** debug输出模式*/
+	@Getter private boolean logger_debug;
 	
 	//数据库地址
 	@Getter private String host;
@@ -96,6 +98,9 @@ public class XyDashboardPosterConfig {
             this.mainNode 				=this.configLoader.load();
             this.post_internal			=this.mainNode.getNode("general").getNode("post-internal").getInt(10);
             this.data_center_type		=this.mainNode.getNode("general").getNode("data-center-type").getString("InfluxDB");
+            this.logger_debug			=this.mainNode.getNode("general").getNode("logger-debug").getBoolean(false);
+            
+            
             this.host					=this.mainNode.getNode("data-center").getNode("host").getString("http://localhost");
             this.port					=this.mainNode.getNode("data-center").getNode("port").getString("8086");
             this.user					=this.mainNode.getNode("data-center").getNode("user").getString("root");

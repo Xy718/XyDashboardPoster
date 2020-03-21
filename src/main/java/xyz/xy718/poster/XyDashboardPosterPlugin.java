@@ -138,4 +138,10 @@ public class XyDashboardPosterPlugin {
         Locale locale = LocaleUtils.toLocale(localeStr);
         I18N.setLocale(locale);
 	}
+	
+	public static void configLogger(String msg,Object... args) {
+		if(mainConfig.isLogger_debug()) {
+			LOGGER.info(msg,args);
+		}
+	}
 }

@@ -15,7 +15,6 @@ import xyz.xy718.poster.service.ServerDataService;
  */
 public class ServerDatagraf extends Datagraf{
 
-	private final Logger LOGGER=XyDashboardPosterPlugin.LOGGER;
 	private static XyDashboardPosterConfig config=XyDashboardPosterPlugin.getMainConfig();
 	
 	public ServerDatagraf(XyDashboardPosterPlugin plugin) {
@@ -35,8 +34,8 @@ public class ServerDatagraf extends Datagraf{
 			long startTime=System.currentTimeMillis();
 			ServerData data=ServerDataService.getServerTPS(config.getTbNameServer());
 			dataList.add(data);
-			LOGGER.info("TPS:{}",data.getServerTPS());
-			LOGGER.info("TPS收集耗时："+(System.currentTimeMillis()-startTime)+"ms");
+			XyDashboardPosterPlugin.configLogger("TPS:{}",data.getServerTPS());
+			XyDashboardPosterPlugin.configLogger("TPS收集耗时："+(System.currentTimeMillis()-startTime)+"ms");
 		}
 	}
 }

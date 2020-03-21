@@ -16,8 +16,6 @@ import xyz.xy718.poster.service.WorldDataService;
  *
  */
 public class WorldDatagraf extends Datagraf{
-
-	private final Logger LOGGER=XyDashboardPosterPlugin.LOGGER;
 	private static XyDashboardPosterConfig config=XyDashboardPosterPlugin.getMainConfig();
 	public WorldDatagraf(XyDashboardPosterPlugin plugin) {
 		this.measurement="world";
@@ -46,8 +44,8 @@ public class WorldDatagraf extends Datagraf{
 			for(WorldData w:data){
 				logs+="-"+w.getWorldName()+":"+w.getChunkCount();
 			}
-			LOGGER.info(logs);
-			LOGGER.info("区块数量收集耗时："+(System.currentTimeMillis()-startTime)+"ms");
+			XyDashboardPosterPlugin.configLogger(logs);
+			XyDashboardPosterPlugin.configLogger("区块数量收集耗时："+(System.currentTimeMillis()-startTime)+"ms");
 		}
 	}
 	class EntityCount implements Work{
@@ -60,8 +58,8 @@ public class WorldDatagraf extends Datagraf{
 			for(WorldEntityData w:data){
 				logs+="-"+w.getWorldName()+":"+w.getEntityCount();
 			}
-			LOGGER.info(logs);
-			LOGGER.info("实体数量收集耗时："+(System.currentTimeMillis()-startTime)+"ms");
+			XyDashboardPosterPlugin.configLogger(logs);
+			XyDashboardPosterPlugin.configLogger("实体数量收集耗时："+(System.currentTimeMillis()-startTime)+"ms");
 		}
 	}
 }
