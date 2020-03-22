@@ -5,7 +5,9 @@ import org.slf4j.Logger;
 
 import xyz.xy718.poster.XyDashboardPosterPlugin;
 import xyz.xy718.poster.config.XyDashboardPosterConfig;
+import xyz.xy718.poster.model.ServerMemoryData;
 import xyz.xy718.poster.model.ServerTPSData;
+import xyz.xy718.poster.model.ServerTimeData;
 import xyz.xy718.poster.service.ServerDataService;
 
 /**
@@ -26,6 +28,18 @@ public class ServerDatagraf extends Datagraf{
 					,(long)(config.getGrafTPSInternal()*1000)
 					,(long)(config.getGrafTPSInternal()*1000));
 		}
+		if(config.isUseMemory()) {
+			buildTask("memory"
+					, new Memory()
+					,(long)(config.getGrafMemoryInternal()*1000)
+					,(long)(config.getGrafMemoryInternal()*1000));
+		}
+		if(config.isUseUptime()) {
+			buildTask("memory"
+					, new UpTime()
+					,(long)(config.getGrafUptimeInternal()*1000)
+					,(long)(config.getGrafUptimeInternal()*1000));
+		}
 	}
 
 	class TPS implements Work{
@@ -34,13 +48,40 @@ public class ServerDatagraf extends Datagraf{
 			long startTime=System.currentTimeMillis();
 			ServerTPSData data=ServerDataService.getServerTPS(config.getTbNameServer());
 			dataList.add(data);
-			XyDashboardPosterPlugin.configLogger("TPS:{}",data.getServerTPS());
-			XyDashboardPosterPlugin.configLogger("TPS收集耗时："+(System.currentTimeMillis()-startTime)+"ms");
+			XyDashboardPosterPlugin.configLogger("TPS:{} 收集耗时：{}ms",data.getServerTPS(),(System.currentTimeMillis()-startTime));
 		}
 
 		@Override
 		public String workName() {
 			return "server-tps";
+		}
+	}
+	class Memory implements Work{
+		@Override
+		public void work() {
+			long startTime=System.currentTimeMillis();
+			ServerMemoryData data=ServerDataService.getServerMemory(config.getTbNameServer());
+			dataList.add(data);
+			XyDashboardPosterPlugin.configLogger("Memory:{} 收集耗时：{}ms",data.getMemoryMSG(),(System.currentTimeMillis()-startTime));
+		}
+
+		@Override
+		public String workName() {
+			return "server-memory";
+		}
+	}
+	class UpTime implements Work{
+		@Override
+		public void work() {
+			long startTime=System.currentTimeMillis();
+			ServerTimeData data=ServerDataService.getServerTime(config.getTbNameServer());
+			dataList.add(data);
+			XyDashboardPosterPlugin.configLogger("UpTime:{} 收集耗时：{}ms",data.getServerTime(),(System.currentTimeMillis()-startTime));
+		}
+
+		@Override
+		public String workName() {
+			return "server-uptime";
 		}
 	}
 }

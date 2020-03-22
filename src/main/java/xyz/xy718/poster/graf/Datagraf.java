@@ -79,6 +79,9 @@ public class Datagraf {
 	 * @return
 	 */
 	public Map<Map<String, String>, List<Grafdata>> getInfluxData() {
+		if(this.dataList.isEmpty()) {
+			return null;
+		}
 		Map<Map<String, String>, List<Grafdata>> data=new HashMap<>();
 		List<Grafdata> dataList=this.dataList;
 		for(int i=0;i<dataList.size();i++) {
@@ -98,6 +101,7 @@ public class Datagraf {
 	}
 	
 	protected static TimerTask getTask(Work w) {
+		XyDashboardPosterPlugin.LOGGER.info("数据收集器{}开始工作!",w.workName());
 		TimerTask task=new TimerTask() {
             @Override
             public void run() {
@@ -105,7 +109,9 @@ public class Datagraf {
             		this.cancel();
             		XyDashboardPosterPlugin.LOGGER.info("由于服务器已关闭，收集器:{}已停止收集工作",w.workName());
             	}
+    			//long startTime=System.currentTimeMillis();
             	w.work();
+            	//XyDashboardPosterPlugin.configLogger("UpTime:{} 收集耗时：{}ms",data.getServerTime(),(System.currentTimeMillis()-startTime));
             }
         };
         return task;

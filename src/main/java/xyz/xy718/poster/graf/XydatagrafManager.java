@@ -13,7 +13,7 @@ public class XydatagrafManager {
 	//数据收集器列表<收集器名,收集器>
 	private static Map<String, Datagraf> grafList=new HashMap<String, Datagraf>();
 	//数据列表<数据表名<tag对象，grafdata列表>>
-	private static Map<String,Map<Map<String,String>, List<Grafdata>>> dataList=new HashMap<>();
+	private static Map<String,Map<Map<String,String>, List<Grafdata>>> postDataList=new HashMap<>();
 	
 	public XydatagrafManager(XyDashboardPosterPlugin plugin) {
 		//装载数据收集器集合
@@ -43,16 +43,16 @@ server
 	 * @return
 	 */
 	public static Map<String,Map<Map<String,String>, List<Grafdata>>> putData() {
-		dataList.clear();
+		postDataList.clear();
 		//根据每个收集器创建测点Map集合
 		grafList.forEach((grafName,graf) -> {
 			//先拿到这个graf的所有数据集合
 			if(config.getData_center_type().equals("InfluxDB")) {
 				//如果是InfluxDB
-				dataList.put(graf.measurement, graf.getInfluxData());
+				postDataList.put(graf.measurement, graf.getInfluxData());
 			}
 			graf.clearData();
 		});
-		return dataList;
+		return postDataList;
 	}
 }

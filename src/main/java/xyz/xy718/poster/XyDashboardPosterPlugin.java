@@ -3,11 +3,14 @@ package xyz.xy718.poster;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Instant;
 import java.util.Locale;
+import java.util.Optional;
 
 import org.apache.commons.lang3.LocaleUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.config.ConfigDir;
 import org.spongepowered.api.config.DefaultConfig;
 import org.spongepowered.api.event.Listener;
@@ -15,6 +18,7 @@ import org.spongepowered.api.event.game.GameReloadEvent;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
 import org.spongepowered.api.event.game.state.GamePreInitializationEvent;
 import org.spongepowered.api.event.game.state.GameStartedServerEvent;
+import org.spongepowered.api.event.game.state.GameStoppedServerEvent;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginContainer;
 
@@ -59,7 +63,9 @@ public class XyDashboardPosterPlugin {
 
 	@Getter private static PosterManager posterManager;
 	@Getter private static InfluxDBConnection influxDB;
-	
+
+    private static Instant gameStartedTime = null;
+    
     public XyDashboardPosterPlugin() {
     	if (instance != null)
 			throw new IllegalStateException();
@@ -68,7 +74,7 @@ public class XyDashboardPosterPlugin {
 	
     @Listener
     public void onGamePreStarting(GamePreInitializationEvent event) {
-    	LOGGER.info("服务器启动中,先加载配置与语言文件~");
+    	LOGGER.info(I18N.getString("plugin.starting"));
     	loadConfig();
     	
         loadI18N();
@@ -88,12 +94,23 @@ public class XyDashboardPosterPlugin {
     @Listener
     public void onServerStart(GameStartedServerEvent event) {
     	LOGGER.info("服务器启动成功，{}也开始工作了~",NAME);
-    	posterManager=new PosterManager(instance);
+    	Sponge.getScheduler().createSyncExecutor(this).submit(() -> this.gameStartedTime = Instant.now());
+    	if(influxDB.ping()) {
+    		//ping通才可以使用
+        	posterManager=new PosterManager(instance);
+    	}else {
+    		LOGGER.error(I18N.getString("error.influxdb.ping"));
+    	}
     }
     
     @Listener
     public void onPluginsReload(GameReloadEvent event) {
     	LOGGER.warn("{}重新加载~",NAME);
+    }
+    
+    @Listener
+    public void onServerStoped(GameStoppedServerEvent event) {
+        this.gameStartedTime = null;
     }
 	public static XyDashboardPosterPlugin get() {
 		if (instance == null)
@@ -144,4 +161,8 @@ public class XyDashboardPosterPlugin {
 			LOGGER.info(msg,args);
 		}
 	}
+	
+    public static Optional<Instant> getGameStartedTime() {
+        return Optional.ofNullable(gameStartedTime);
+    }
 }

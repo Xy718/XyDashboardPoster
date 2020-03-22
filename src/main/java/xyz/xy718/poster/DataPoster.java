@@ -57,6 +57,11 @@ public class DataPoster {
 						tags.getKey().forEach((k,v)->batchbuilder.tag(k, v));
 						BatchPoints batchPoints = batchbuilder
 								.retentionPolicy(config.getRetention_policy()).consistency(ConsistencyLevel.ALL).build();
+						
+						//grafdatas不为空
+						if(tags.getValue().isEmpty()) {
+							continue;
+						}
 						//装载所有fields
 						for(Grafdata data:tags.getValue()) {
 							Map<String, String> t = data.getTagMap();

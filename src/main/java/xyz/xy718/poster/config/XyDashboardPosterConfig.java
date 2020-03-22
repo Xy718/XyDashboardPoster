@@ -69,6 +69,14 @@ public class XyDashboardPosterConfig {
 	@Getter private boolean useTPS;
 	//TPS数据采集间隔(秒)
 	@Getter private double grafTPSInternal;
+	//内存信息是否收集
+	@Getter private boolean useMemory;
+	//内存数据采集间隔(秒)
+	@Getter private double grafMemoryInternal;
+	//运行时间信息是否收集
+	@Getter private boolean useUptime;
+	//运行时间数据采集间隔(秒)
+	@Getter private double grafUptimeInternal;
 	
 	
 	// formmater:on
@@ -120,6 +128,10 @@ public class XyDashboardPosterConfig {
             this.tbNameServer			=this.mainNode.getNode("server").getNode("measurement-name").getString("world");
             this.useTPS					=this.mainNode.getNode("server").getNode("tps").getBoolean(false);
             this.grafTPSInternal		=this.mainNode.getNode("server").getNode("graf-tps-internal").getDouble(3);
+            this.useMemory				=this.mainNode.getNode("server").getNode("memory").getBoolean(false);
+            this.grafMemoryInternal		=this.mainNode.getNode("server").getNode("graf-memory-internal").getDouble(3);
+            this.useUptime				=this.mainNode.getNode("server").getNode("uptime").getBoolean(false);
+            this.grafUptimeInternal		=this.mainNode.getNode("server").getNode("graf-uptime-internal").getDouble(3);
             
         } catch (IOException e) {
             e.printStackTrace();
