@@ -74,15 +74,15 @@ public class XyDashboardPosterPlugin {
 	
     @Listener
     public void onGamePreStarting(GamePreInitializationEvent event) {
-    	LOGGER.info(I18N.getString("plugin.starting"));
+    	//先加载配置
     	loadConfig();
-    	
+    	//再加载I18N
         loadI18N();
     }
 
     @Listener
     public void onGameStarting(GameInitializationEvent event) {
-    	LOGGER.info("配置加载完成,{}开始连接数据库~",NAME);
+    	LOGGER.info(I18N.getString("plugin.starting",NAME));
     	influxDB=new InfluxDBConnection(
     			mainConfig.getUser()
     			,mainConfig.getPassword()

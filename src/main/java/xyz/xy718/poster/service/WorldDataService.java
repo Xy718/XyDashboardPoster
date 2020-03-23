@@ -1,9 +1,12 @@
 package xyz.xy718.poster.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.spongepowered.api.Sponge;
+import org.spongepowered.api.entity.EntityType;
 import org.spongepowered.api.world.Chunk;
 import org.spongepowered.api.world.World;
 
@@ -32,13 +35,22 @@ public class WorldDataService {
 	}
 	
 	/**
-	 * 获取每个世界的实体数量
+	 * 获取每个世界的实体数量和细分数量
 	 * @return
 	 */
 	public static List<WorldEntityData> getWorldEntityInfo(String measurement){
 		List<WorldEntityData> wed=new ArrayList<WorldEntityData>();
 		for(World w:Sponge.getServer().getWorlds()){
-			wed.add(new WorldEntityData(w.getUniqueId(), w.getName(), w.getEntities().size(),measurement));
+			Map<String, Integer> classificationEntities=new HashMap<String, Integer>();
+			w.getEntities().forEach(entity->{
+				if(classificationEntities.get(entity.getType().getId())==null) {
+					//新的分类
+					classificationEntities.put(entity.getType().getId(), 1);
+				}else {
+					classificationEntities.put(entity.getType().getId(), classificationEntities.get(entity.getType().getId())+1);
+				}
+			});
+			wed.add(new WorldEntityData(w.getUniqueId(), w.getName(), w.getEntities().size(),classificationEntities,measurement));
 		};
 		return wed;
 	}

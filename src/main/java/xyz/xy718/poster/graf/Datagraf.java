@@ -109,9 +109,9 @@ public class Datagraf {
             		this.cancel();
             		XyDashboardPosterPlugin.LOGGER.info("由于服务器已关闭，收集器:{}已停止收集工作",w.workName());
             	}
-    			//long startTime=System.currentTimeMillis();
+    			long startTime=System.currentTimeMillis();
             	w.work();
-            	//XyDashboardPosterPlugin.configLogger("UpTime:{} 收集耗时：{}ms",data.getServerTime(),(System.currentTimeMillis()-startTime));
+            	XyDashboardPosterPlugin.configLogger("UpTime:{} 收集耗时：{}ms",2.,(System.currentTimeMillis()-startTime));
             }
         };
         return task;

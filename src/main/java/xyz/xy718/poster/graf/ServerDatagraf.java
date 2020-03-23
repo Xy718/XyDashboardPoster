@@ -84,4 +84,19 @@ public class ServerDatagraf extends Datagraf{
 			return "server-uptime";
 		}
 	}
+	
+	class CPU implements Work{
+		@Override
+		public void work() {
+			long startTime=System.currentTimeMillis();
+			ServerTimeData data=ServerDataService.getServerTime(config.getTbNameServer());
+			dataList.add(data);
+			XyDashboardPosterPlugin.configLogger("UpTime:{} 收集耗时：{}ms",data.getServerTime(),(System.currentTimeMillis()-startTime));
+		}
+
+		@Override
+		public String workName() {
+			return "server-cpu";
+		}
+	}
 }
