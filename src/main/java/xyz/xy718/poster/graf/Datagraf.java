@@ -83,14 +83,18 @@ public class Datagraf {
 			return null;
 		}
 		Map<Map<String, String>, List<Grafdata>> data=new HashMap<>();
-		List<Grafdata> dataList=this.dataList;
-		for(int i=0;i<dataList.size();i++) {
-			if(data.get(dataList.get(i).getTagMap())==null) {
-				//如果不存在这个tag
-				data.put(dataList.get(i).getTagMap(), new ArrayList<>());
+		Grafdata[] dataList=this.dataList.toArray(new Grafdata[data.size()]);
+		try {
+			for(int i=0;i<dataList.length;i++) {
+				if(data.get(dataList[i].getTagMap())==null) {
+					//如果不存在这个tag
+					data.put(dataList[i].getTagMap(), new ArrayList<>());
+				}
+				//在这个tag下放入数据
+				data.get(dataList[i].getTagMap()).add(dataList[i]);
 			}
-			//在这个tag下放入数据
-			data.get(dataList.get(i).getTagMap()).add(dataList.get(i));
+		}catch (Exception e) {
+			e.printStackTrace();
 		}
 		return data;
 	}
@@ -111,7 +115,7 @@ public class Datagraf {
             	}
     			long startTime=System.currentTimeMillis();
             	w.work();
-            	XyDashboardPosterPlugin.configLogger("UpTime:{} 收集耗时：{}ms",2.,(System.currentTimeMillis()-startTime));
+            	XyDashboardPosterPlugin.configLogger("{} 收集耗时：{}ms",w.workName(),(System.currentTimeMillis()-startTime));
             }
         };
         return task;

@@ -59,10 +59,8 @@ public class ServerDatagraf extends Datagraf{
 	class Memory implements Work{
 		@Override
 		public void work() {
-			long startTime=System.currentTimeMillis();
 			ServerMemoryData data=ServerDataService.getServerMemory(config.getTbNameServer());
 			dataList.add(data);
-			XyDashboardPosterPlugin.configLogger("Memory:{} 收集耗时：{}ms",data.getMemoryMSG(),(System.currentTimeMillis()-startTime));
 		}
 
 		@Override
@@ -73,30 +71,13 @@ public class ServerDatagraf extends Datagraf{
 	class UpTime implements Work{
 		@Override
 		public void work() {
-			long startTime=System.currentTimeMillis();
 			ServerTimeData data=ServerDataService.getServerTime(config.getTbNameServer());
 			dataList.add(data);
-			XyDashboardPosterPlugin.configLogger("UpTime:{} 收集耗时：{}ms",data.getServerTime(),(System.currentTimeMillis()-startTime));
 		}
 
 		@Override
 		public String workName() {
 			return "server-uptime";
-		}
-	}
-	
-	class CPU implements Work{
-		@Override
-		public void work() {
-			long startTime=System.currentTimeMillis();
-			ServerTimeData data=ServerDataService.getServerTime(config.getTbNameServer());
-			dataList.add(data);
-			XyDashboardPosterPlugin.configLogger("UpTime:{} 收集耗时：{}ms",data.getServerTime(),(System.currentTimeMillis()-startTime));
-		}
-
-		@Override
-		public String workName() {
-			return "server-cpu";
 		}
 	}
 }

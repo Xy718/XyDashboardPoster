@@ -8,6 +8,7 @@ import xyz.xy718.poster.XyDashboardPosterPlugin;
 import xyz.xy718.poster.config.XyDashboardPosterConfig;
 import xyz.xy718.poster.model.WorldChunkCountData;
 import xyz.xy718.poster.model.WorldEntityData;
+import xyz.xy718.poster.model.WorldTileEntityData;
 import xyz.xy718.poster.service.WorldDataService;
 
 /**
@@ -21,16 +22,22 @@ public class WorldDatagraf extends Datagraf{
 		this.measurement="world";
 		//死亡if她又来了
 		if(config.isUseWorldGraf()) {
-			buildTask("chunk-count"
+			buildTask("world-chunk"
 					, new ChunkCount()
 					,(long)(config.getGrafChunkCountInternal()*1000)
 					,(long)(config.getGrafChunkCountInternal()*1000));
 		}
 		if(config.isUseEntityCount()) {
-			buildTask("entity-count"
+			buildTask("world-entity"
 					, new EntityCount()
 					,(long)(config.getGrafEntityCountInternal()*1000)
 					,(long)(config.getGrafEntityCountInternal()*1000));
+		}
+		if(config.isUseTECount()) {
+			buildTask("world-tile-entity"
+					, new TileEntityCount()
+					,(long)(config.getGrafTECountInternal()*1000)
+					,(long)(config.getGrafTECountInternal()*1000));
 		}
 	}
 
@@ -56,7 +63,6 @@ public class WorldDatagraf extends Datagraf{
 	class EntityCount implements Work{
 		@Override
 		public void work() {
-			long startTime=System.currentTimeMillis();
 			List<WorldEntityData> data=WorldDataService.getWorldEntityInfo(config.getTbNameWorld());
 			dataList.addAll(data);
 			String logs="实体数量";
@@ -64,12 +70,28 @@ public class WorldDatagraf extends Datagraf{
 				logs+="-"+w.getWorldName()+":"+w.getEntityCount();
 			}
 			XyDashboardPosterPlugin.configLogger(logs);
-			XyDashboardPosterPlugin.configLogger("实体数量收集耗时："+(System.currentTimeMillis()-startTime)+"ms");
 		}
 
 		@Override
 		public String workName() {
 			return "world-entity-count";
+		}
+	}
+	class TileEntityCount implements Work{
+		@Override
+		public void work() {
+			List<WorldTileEntityData> data=WorldDataService.getWorldTileEntityInfo(config.getTbNameWorld());
+			dataList.addAll(data);
+			String logs="TE数量";
+			for(WorldTileEntityData w:data){
+				logs+="-"+w.getWorldName()+":"+w.getEntityCount();
+			}
+			XyDashboardPosterPlugin.configLogger(logs);
+		}
+
+		@Override
+		public String workName() {
+			return "world-tile-entity-count";
 		}
 	}
 }

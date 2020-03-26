@@ -5,19 +5,15 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 
 import org.apache.commons.lang3.LocaleUtils;
-import org.apache.commons.lang3.ObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spongepowered.api.Sponge;
-import org.spongepowered.api.command.spec.CommandSpec;
-import org.spongepowered.api.command.spec.CommandSpec.Builder;
 import org.spongepowered.api.config.ConfigDir;
 import org.spongepowered.api.config.DefaultConfig;
 import org.spongepowered.api.event.Listener;
@@ -32,7 +28,6 @@ import org.spongepowered.api.plugin.PluginContainer;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
-import com.sun.glass.ui.TouchInputSupport;
 
 import lombok.Getter;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
@@ -169,7 +164,7 @@ public class XyDashboardPosterPlugin {
    	 // init i18n service
         I18N.setLogger(LOGGER);
         I18N.setPlugin(this);
-        String localeStr = mainConfig.getNode("general").getNode("lang").getString();
+        String localeStr = mainConfig.getLang();
         if (localeStr == null || localeStr.isEmpty()) {
             localeStr = "zh_CN";
         }
@@ -186,14 +181,15 @@ public class XyDashboardPosterPlugin {
     public static Optional<Instant> getGameStartedTime() {
         return Optional.ofNullable(gameStartedTime);
     }
-	public static int registerCommandsByAnnotation(Class<?> classX,PluginContainer plugin) {
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public static int registerCommandsByAnnotation(Class ObjectPlugin,PluginContainer plugin) {
         List<AbstractCommand> cmds=new ArrayList<>();
 		try {
 			//List<Class> cs=loadClassByLoader(classX.getClassLoader());
 	        List<String> classNames = PackageUtil.getClassName("xyz.xy718.poster", true);
 	        List<Class> cs=new ArrayList<>();
 	        for(String name:classNames) {
-	        	cs.add(classX.getClassLoader().loadClass(name));
+	        	cs.add(ObjectPlugin.getClassLoader().loadClass(name));
 	        }
 	        //获取所有指令对象
 			for(Class<AbstractCommand> c:cs) {
@@ -203,7 +199,7 @@ public class XyDashboardPosterPlugin {
 					cmds.add(abc);
 				}
 			}
-			List<AbstractCommand> buildedCommands=tree(999, cmds);
+			List<AbstractCommand> buildedCommands=tree(cmds);
 			buildedCommands.forEach(c->{
 				Sponge.getCommandManager().register(XyDashboardPosterPlugin.get(), c.getBuilder().build(), c.getAliases()[0]);
 			});
@@ -214,7 +210,7 @@ public class XyDashboardPosterPlugin {
 		return cmds.size();
 	}
 
-	private static List<AbstractCommand> tree(int dept,List<AbstractCommand> cmds){
+	private static List<AbstractCommand> tree(List<AbstractCommand> cmds){
 		List<AbstractCommand> topCommands=Lists.newArrayList();
 		cmds.forEach(cmd->{//载入顶级指令
 			if(cmd.isRoot())topCommands.add(cmd);
@@ -226,20 +222,20 @@ public class XyDashboardPosterPlugin {
 		if(!topCommands.isEmpty()) {
 			Map<String, String> map=Maps.newHashMapWithExpectedSize(childCommands.size());
 			topCommands.forEach(top->{
-				getChild(top,childCommands,dept,map);
+				getChild(top,childCommands,map);
 			});
 		}
 		return topCommands;
 	}
 
 	private static void getChild(
-			AbstractCommand top, List<AbstractCommand> childCommands, int dept,Map<String, String> map
+			AbstractCommand top, List<AbstractCommand> childCommands,Map<String, String> map
 			) {
 		childCommands.stream()
 			.filter(c->!map.containsKey(c.getAliases()[1]))
 			.forEach(c->{
 				map.put(c.getAliases()[1], c.getAliases()[0]);
-				getChild(c, childCommands, dept, map);
+				getChild(c, childCommands, map);
 				top.getBuilder().child(c.getBuilder().build(), c.getAliases()[1]);
 			});
 	}

@@ -121,6 +121,14 @@ public class I18N {
             return TextSerializers.FORMATTING_CODE.deserialize(filledValue);
         }
     }
+    public static Text getPluginNameText(String key, Object... args) {
+        String filledValue = getString("plugin.logger.prefix")+getString(key, args);
+        if (filledValue.equals(key)) {
+            return Text.of(key);
+        } else {
+            return TextSerializers.FORMATTING_CODE.deserialize(filledValue);
+        }
+    }
 }
 
 class UTF8Control extends ResourceBundle.Control {
