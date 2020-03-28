@@ -15,7 +15,6 @@ import org.slf4j.Logger;
 
 import xyz.xy718.poster.config.I18N;
 import xyz.xy718.poster.config.XyDashboardPosterConfig;
-import xyz.xy718.poster.graf.XydatagrafManager;
 import xyz.xy718.poster.model.Grafdata;
 import xyz.xy718.poster.util.InfluxDBConnection;
 

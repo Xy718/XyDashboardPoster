@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.spongepowered.api.Sponge;
-import org.spongepowered.api.entity.EntityType;
 import org.spongepowered.api.world.Chunk;
 import org.spongepowered.api.world.World;
 
@@ -76,5 +75,4 @@ public class WorldDataService {
 		};
 		return wed;
 	}
-	//TODO 获取每个世界的玩家数量
 }

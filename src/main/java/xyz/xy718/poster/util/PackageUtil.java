@@ -102,7 +102,8 @@ public class PackageUtil {
         String jarFilePath = jarInfo[0].substring(jarInfo[0].indexOf("/"));
         String packagePath = jarInfo[1].substring(1);
         try {
-            JarFile jarFile = new JarFile(jarFilePath);
+            @SuppressWarnings("resource")
+			JarFile jarFile = new JarFile(jarFilePath);
             Enumeration<JarEntry> entrys = jarFile.entries();
             while (entrys.hasMoreElements()) {
                 JarEntry jarEntry = entrys.nextElement();

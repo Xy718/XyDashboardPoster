@@ -105,7 +105,7 @@ public class XyDashboardPosterPlugin {
     @Listener
     public void onServerStart(GameStartedServerEvent event) {
     	LOGGER.info(I18N.getString("plugin.started",NAME));
-    	Sponge.getScheduler().createSyncExecutor(this).submit(() -> this.gameStartedTime = Instant.now());
+    	Sponge.getScheduler().createSyncExecutor(this).submit(() -> gameStartedTime = Instant.now());
     	if(influxDB.ping()) {
     		//ping通才可以使用
         	posterManager=new PosterManager(instance);
@@ -121,7 +121,7 @@ public class XyDashboardPosterPlugin {
     
     @Listener
     public void onServerStoped(GameStoppedServerEvent event) {
-        this.gameStartedTime = null;
+        gameStartedTime = null;
     }
 	public static XyDashboardPosterPlugin get() {
 		if (instance == null)

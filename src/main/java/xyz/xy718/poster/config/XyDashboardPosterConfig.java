@@ -62,6 +62,7 @@ public class XyDashboardPosterConfig {
             //模块启用
             this.useWorldGraf			=this.mainNode.getNode("modules","world").getBoolean(false);
             this.useServerGraf			=this.mainNode.getNode("modules","server").getBoolean(false);
+            this.usePlayerGraf			=this.mainNode.getNode("modules","player").getBoolean(false);
             
             this.tbNameWorld			=this.mainNode.getNode("modules-world","a-measurement-name").getString("world");
             this.useChunkCount			=this.mainNode.getNode("modules-world","chunk","enable").getBoolean(false);
@@ -80,6 +81,10 @@ public class XyDashboardPosterConfig {
             this.grafUptimeInternal		=this.mainNode.getNode("modules-server","uptime","internal").getDouble(3);
             this.useCPU					=this.mainNode.getNode("modules-server","cpu","enable").getBoolean(false);
             this.grafCPUInternal		=this.mainNode.getNode("modules-server","cpu","internal").getDouble(3);
+            
+            this.tbNamePlayer			=this.mainNode.getNode("modules-player","a-measurement-name").getString("player");
+            this.usePlayerCount			=this.mainNode.getNode("modules-player","count","enable").getBoolean(false);
+            this.grafPlayerCountInternal=this.mainNode.getNode("modules-player","count","internal").getDouble(3);
             
         } catch (IOException e) {
             e.printStackTrace();
@@ -169,4 +174,13 @@ public class XyDashboardPosterConfig {
 	@Getter private boolean useCPU;
 	//CPU信息采集间隔(秒)
 	@Getter private double grafCPUInternal;
+	
+	/**玩家信息是否收集*/
+	@Getter private boolean usePlayerGraf;
+	//表名
+	@Getter private String tbNamePlayer;
+	//玩家信息是否收集
+	@Getter private boolean usePlayerCount;
+	//玩家数据采集间隔(秒)
+	@Getter private double grafPlayerCountInternal;
 }

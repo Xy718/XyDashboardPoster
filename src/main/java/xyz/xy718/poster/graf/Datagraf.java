@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -12,7 +13,6 @@ import org.spongepowered.api.Sponge;
 import lombok.Getter;
 import xyz.xy718.poster.XyDashboardPosterPlugin;
 import xyz.xy718.poster.config.I18N;
-import xyz.xy718.poster.graf.WorldDatagraf.EntityCount;
 import xyz.xy718.poster.model.Grafdata;
 
 public class Datagraf {
@@ -22,6 +22,14 @@ public class Datagraf {
 
 	Map<String, Timer> taskTimers=new HashMap<String, Timer>();
 	Map<String, Boolean> taskRunStatus=new HashMap<>();
+	
+	public int getWorkedCount() {
+		int c=0;
+		for(Entry<String, Boolean> taskS:taskRunStatus.entrySet()) {
+			if(taskS.getValue()) c++;
+		}
+		return c;
+	}
 	
 	/**
 	 * 清空已收集的数据
@@ -94,7 +102,7 @@ public class Datagraf {
 		Grafdata[] dataList=this.dataList.toArray(new Grafdata[data.size()]);
 			for(int i=0;i<dataList.length;i++) {
 				if(dataList[i]==null) {
-					XyDashboardPosterPlugin.configLogger((I18N.getString("data.post.skip")));
+					XyDashboardPosterPlugin.LOGGER.info((this.measurement+I18N.getString("data.post.skip")));
 					continue;
 				}
 				if(data.get(dataList[i].getTagMap())==null) {

@@ -3,8 +3,6 @@ package xyz.xy718.poster.model;
 import java.util.Map;
 import java.util.UUID;
 
-import org.spongepowered.api.entity.EntityType;
-
 public class WorldEntityData extends Grafdata{
 
 	public WorldEntityData(UUID wUuid,String wName,int cCount, Map<String, Integer> classificationEntities, String measurement) {

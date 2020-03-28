@@ -1,22 +1,17 @@
 package xyz.xy718.poster.command;
 
 import org.slf4j.Logger;
-import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 
-import xyz.xy718.poster.DataPoster;
 import xyz.xy718.poster.PosterManager;
 import xyz.xy718.poster.XyDashboardPosterPlugin;
 import xyz.xy718.poster.annotation.Permission;
 import xyz.xy718.poster.annotation.RegisterCommand;
 import xyz.xy718.poster.config.I18N;
 import xyz.xy718.poster.config.Permissions;
-import xyz.xy718.poster.config.XyDashboardPosterConfig;
-import xyz.xy718.poster.graf.XydatagrafManager;
-
 /**
  * 重载插件配置及相关收集器推送器
  * @author Xy718

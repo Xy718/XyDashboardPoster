@@ -2,8 +2,6 @@ package xyz.xy718.poster.graf;
 
 import java.util.List;
 
-import org.slf4j.Logger;
-
 import xyz.xy718.poster.XyDashboardPosterPlugin;
 import xyz.xy718.poster.config.I18N;
 import xyz.xy718.poster.config.XyDashboardPosterConfig;

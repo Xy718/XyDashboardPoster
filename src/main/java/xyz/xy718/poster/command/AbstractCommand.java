@@ -1,39 +1,18 @@
 package xyz.xy718.poster.command;
 
 import java.lang.reflect.Modifier;
-import java.time.Instant;
-import java.util.Collection;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
 
-import javax.annotation.Nullable;
-
-import org.spongepowered.api.Sponge;
-import org.spongepowered.api.command.CommandSource;
-import org.spongepowered.api.command.args.CommandElement;
-import org.spongepowered.api.command.args.GenericArguments;
-import org.spongepowered.api.command.args.parsing.InputTokenizer;
-import org.spongepowered.api.command.dispatcher.SimpleDispatcher;
 import org.spongepowered.api.command.spec.CommandExecutor;
 import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.command.spec.CommandSpec.Builder;
-import org.spongepowered.api.text.Text;
-
-import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-
-import co.aikar.timings.Timing;
 import lombok.Getter;
-import xyz.xy718.poster.XyDashboardPosterPlugin;
 import xyz.xy718.poster.annotation.Permission;
 import xyz.xy718.poster.annotation.RegisterCommand;
 
 
 public abstract class AbstractCommand implements CommandExecutor {
-	private static final InputTokenizer tokeniser = InputTokenizer.quotedStrings(false);
 
     // A period separated list of parent commands, starting with the prefix. Period terminated.
     private final String commandPath;

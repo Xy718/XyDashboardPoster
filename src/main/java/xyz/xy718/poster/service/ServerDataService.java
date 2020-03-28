@@ -3,12 +3,9 @@ package xyz.xy718.poster.service;
 import java.lang.management.ManagementFactory;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import org.hyperic.sigar.CpuPerc;
-import org.hyperic.sigar.Sigar;
 import org.hyperic.sigar.SigarException;
 import org.spongepowered.api.Sponge;
 
