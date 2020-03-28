@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import xyz.xy718.poster.XyDashboardPosterPlugin;
+import xyz.xy718.poster.config.I18N;
 import xyz.xy718.poster.config.XyDashboardPosterConfig;
 import xyz.xy718.poster.model.Grafdata;
 
@@ -32,7 +33,7 @@ public class XydatagrafManager {
 			grafList.put("PlayerDatagraf", new PlayerDatagraf(plugin)); 
 		}
 		//log显示一下
-		XyDashboardPosterPlugin.LOGGER.info("总计{}个收集器",this.workedGraf());
+		XyDashboardPosterPlugin.LOGGER.info(I18N.getString("graf.count",this.workedGraf()));
 	}
 
 	/**
