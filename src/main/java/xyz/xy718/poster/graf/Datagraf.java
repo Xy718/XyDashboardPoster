@@ -11,6 +11,7 @@ import org.spongepowered.api.Sponge;
 
 import lombok.Getter;
 import xyz.xy718.poster.XyDashboardPosterPlugin;
+import xyz.xy718.poster.config.I18N;
 import xyz.xy718.poster.graf.WorldDatagraf.EntityCount;
 import xyz.xy718.poster.model.Grafdata;
 
@@ -50,11 +51,10 @@ public class Datagraf {
 	 * @param taskBody
 	 */
 	public void startTask(String taskName,Timer taskBody) {
-		if(this.taskRunStatus.get(taskName)==null) {
-			return;
-		}
-		if(this.taskRunStatus.get(taskName)) {
-			return;
+		//如果已经存在同名收集任务
+		if(this.taskRunStatus.get(taskName)!=null) {
+			this.taskTimers.get(taskName).cancel(); //把你取消
+			this.taskRunStatus.put(taskName, false);//把你取消
 		}
 		this.taskTimers.put(taskName, taskBody);
 		this.taskRunStatus.put(taskName, true);
@@ -71,7 +71,15 @@ public class Datagraf {
 			return;
 		}
 		this.taskRunStatus.put(taskName, false);
-		taskTimers.get(taskName).cancel();
+		this.taskTimers.get(taskName).cancel();
+	}
+	/**
+	 * 停止收集器所有的任务
+	 */
+	public void endAllTask() {
+		this.taskTimers.forEach( (n,t)->{
+			endTask(n);
+		});
 	}
 	/**
 	 * 输出该graf的数据的Influxdb格式<br>
@@ -84,8 +92,11 @@ public class Datagraf {
 		}
 		Map<Map<String, String>, List<Grafdata>> data=new HashMap<>();
 		Grafdata[] dataList=this.dataList.toArray(new Grafdata[data.size()]);
-		try {
 			for(int i=0;i<dataList.length;i++) {
+				if(dataList[i]==null) {
+					XyDashboardPosterPlugin.configLogger((I18N.getString("data.post.skip")));
+					continue;
+				}
 				if(data.get(dataList[i].getTagMap())==null) {
 					//如果不存在这个tag
 					data.put(dataList[i].getTagMap(), new ArrayList<>());
@@ -93,9 +104,6 @@ public class Datagraf {
 				//在这个tag下放入数据
 				data.get(dataList[i].getTagMap()).add(dataList[i]);
 			}
-		}catch (Exception e) {
-			e.printStackTrace();
-		}
 		return data;
 	}
 	
@@ -105,19 +113,20 @@ public class Datagraf {
 	}
 	
 	protected static TimerTask getTask(Work w) {
-		XyDashboardPosterPlugin.LOGGER.info("数据收集器{}开始工作!",w.workName());
+		XyDashboardPosterPlugin.LOGGER.info(I18N.getString("graf.start.name",w.workName()));
 		TimerTask task=new TimerTask() {
             @Override
             public void run() {
             	if(!Sponge.isServerAvailable()) {
             		this.cancel();
-            		XyDashboardPosterPlugin.LOGGER.info("由于服务器已关闭，收集器:{}已停止收集工作",w.workName());
+            		XyDashboardPosterPlugin.LOGGER.info(I18N.getString("graf.stop.name", w.workName()));
             	}
     			long startTime=System.currentTimeMillis();
             	w.work();
-            	XyDashboardPosterPlugin.configLogger("{} 收集耗时：{}ms",w.workName(),(System.currentTimeMillis()-startTime));
+            	XyDashboardPosterPlugin.configLogger(I18N.getString("graf.spend.time",w.workName(),(System.currentTimeMillis()-startTime)));
             }
         };
         return task;
 	}
+
 }

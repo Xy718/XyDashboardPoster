@@ -3,35 +3,15 @@ package xyz.xy718.poster.config;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
 
 import javax.annotation.Nonnull;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
 import org.slf4j.Logger;
-import org.spongepowered.api.data.type.ComparatorTypes;
-import org.spongepowered.api.util.TypeTokens;
-import org.spongepowered.api.world.World;
-
-import com.google.common.collect.Comparators;
-import com.typesafe.config.ConfigParseOptions;
 
 import lombok.Getter;
-import ninja.leaping.configurate.ConfigurationOptions;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
-import ninja.leaping.configurate.loader.HeaderMode;
-import ninja.leaping.configurate.objectmapping.DefaultObjectMapperFactory;
-import ninja.leaping.configurate.objectmapping.GuiceObjectMapperFactory;
-import ninja.leaping.configurate.objectmapping.ObjectMapperFactory;
-import ninja.leaping.configurate.objectmapping.ObjectMappingException;
-import ninja.leaping.configurate.objectmapping.serialize.TypeSerializerCollection;
-import ninja.leaping.configurate.util.MapFactories;
-import ninja.leaping.configurate.util.MapFactory;
 import xyz.xy718.poster.XyDashboardPosterPlugin;
 
 public class XyDashboardPosterConfig {
@@ -49,9 +29,7 @@ public class XyDashboardPosterConfig {
         		.setPath(path).build();
         //看看配置文件是否存在，不存在就新建，存在就更新
         try {
-            if (Files.exists(path)) {
-                upgradeConf();
-            } else {
+            if (!Files.exists(path)) {
             	plugin.getContainer().getAsset(mainConfName).get().copyToFile(path);
             }
             //重载配置文件(在构造函数的用意就是读取一遍配置文件)
@@ -66,8 +44,10 @@ public class XyDashboardPosterConfig {
 	 */
 	public void reload() {
         try {
-        	//主节点(总配置)
+        	//从文件中主节点(总配置)
             this.mainNode				=this.configLoader.load();
+            //更新配置文件
+            upgradeConf(XyDashboardPosterPlugin.get());
             this.post_internal			=this.mainNode.getNode("a-general","post-internal").getInt(10);
             this.data_center_type		=this.mainNode.getNode("a-general","data-center-type").getString("InfluxDB");
             this.logger_debug			=this.mainNode.getNode("a-general","logger-debug").getBoolean(false);
@@ -98,15 +78,24 @@ public class XyDashboardPosterConfig {
             this.grafMemoryInternal		=this.mainNode.getNode("modules-server","memory","internal").getDouble(3);
             this.useUptime				=this.mainNode.getNode("modules-server","uptime","enable").getBoolean(false);
             this.grafUptimeInternal		=this.mainNode.getNode("modules-server","uptime","internal").getDouble(3);
+            this.useCPU					=this.mainNode.getNode("modules-server","cpu","enable").getBoolean(false);
+            this.grafCPUInternal		=this.mainNode.getNode("modules-server","cpu","internal").getDouble(3);
             
         } catch (IOException e) {
             e.printStackTrace();
             LOGGER.warn("reload failed: {}", mainConfName);
         }
     }
-    private void upgradeConf() {
-    	LOGGER.info("更新配置文件（假的）");
-        //TODO 从新插件更新新版配置文件
+    private void upgradeConf(XyDashboardPosterPlugin plugin) throws IOException {
+    	LOGGER.info("update and merge config");
+    	//从文件中主节点(总配置)
+    	HoconConfigurationLoader jarLoader = 
+    			HoconConfigurationLoader.builder()
+    			.setURL(plugin.getContainer().getAsset(mainConfName).get().getUrl())
+    			.build();
+    	
+    	this.mainNode.mergeValuesFrom(jarLoader.load());
+    	this.configLoader.save(mainNode);
     }
 
     public CommentedConfigurationNode getNode(@Nonnull final Object... keys) {
@@ -176,4 +165,8 @@ public class XyDashboardPosterConfig {
 	@Getter private boolean useUptime;
 	//运行时间数据采集间隔(秒)
 	@Getter private double grafUptimeInternal;
+	//CPU信息是否收集
+	@Getter private boolean useCPU;
+	//CPU信息采集间隔(秒)
+	@Getter private double grafCPUInternal;
 }

@@ -13,6 +13,7 @@ import org.influxdb.dto.BatchPoints.Builder;
 import org.influxdb.dto.Point;
 import org.slf4j.Logger;
 
+import xyz.xy718.poster.config.I18N;
 import xyz.xy718.poster.config.XyDashboardPosterConfig;
 import xyz.xy718.poster.graf.XydatagrafManager;
 import xyz.xy718.poster.model.Grafdata;
@@ -22,6 +23,7 @@ import xyz.xy718.poster.util.InfluxDBConnection;
 public class DataPoster {
 
 	private Timer posterTask;
+	private static Logger LOGGER=XyDashboardPosterPlugin.LOGGER;
 	private static XyDashboardPosterConfig config=XyDashboardPosterPlugin.getMainConfig();
 	
 	public DataPoster(XyDashboardPosterPlugin plugin) {
@@ -33,7 +35,7 @@ public class DataPoster {
 				// TODO DataPoster发送数据
 				long startTime=System.currentTimeMillis();
 				//从graf管理器装载数据
-				Map<String,Map<Map<String,String>, List<Grafdata>>> grafdatas=XydatagrafManager.putData();
+				Map<String,Map<Map<String,String>, List<Grafdata>>> grafdatas=XyDashboardPosterPlugin.getPosterManager().getDatagraf().putData();
 				int i=0;
 				for(Entry<String, Map<Map<String, String>, List<Grafdata>>> v:grafdatas.entrySet()) {
 					for(Entry<Map<String, String>, List<Grafdata>> v2:v.getValue().entrySet()) {
@@ -79,11 +81,20 @@ public class DataPoster {
 				}
 				
 				// 将数据批量插入到数据库中
- 				influxDBConnection.batchInsert(config.getDatabase(),config.getRetention_policy(), ConsistencyLevel.ALL, records);
- 				XyDashboardPosterPlugin.configLogger("推送{}条数据耗时:{}ms",i,(System.currentTimeMillis()-startTime));
+				try {
+	 				influxDBConnection.batchInsert(config.getDatabase(),config.getRetention_policy(), ConsistencyLevel.ALL, records);
+				} catch (Exception e) {
+					LOGGER.error(I18N.getString("error.post.influxdb", e.getMessage()));
+					e.printStackTrace();
+				}
+ 				XyDashboardPosterPlugin.configLogger(I18N.getString("data.post.msg",i,(System.currentTimeMillis()-startTime)));
 				
 			}
 		},(long)(config.getPost_internal()*1000),(long)(config.getPost_internal()*1000));
+	}
+
+	public void endPost() {
+		posterTask.cancel();
 	}
 
 }

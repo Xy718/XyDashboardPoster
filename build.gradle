@@ -34,6 +34,7 @@ repositories {
 }
 
 dependencies {
+	compile 'org.fusesource:sigar:1.6.4'
 	compile 'com.squareup.okhttp3:okhttp:3.6.0'
 	compile 'com.squareup.retrofit2:retrofit:2.3.0'
 	compile 'org.influxdb:influxdb-java:2.10'

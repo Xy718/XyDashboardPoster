@@ -11,6 +11,7 @@ import org.spongepowered.api.world.Chunk;
 import org.spongepowered.api.world.World;
 
 import xyz.xy718.poster.XyDashboardPosterPlugin;
+import xyz.xy718.poster.config.I18N;
 import xyz.xy718.poster.model.WorldChunkCountData;
 import xyz.xy718.poster.model.WorldEntityData;
 import xyz.xy718.poster.model.WorldTileEntityData;
@@ -29,7 +30,7 @@ public class WorldDataService {
 				wd.add(new WorldChunkCountData(w.getUniqueId(), w.getName(), testL.size(),measurement));
 			}catch (Exception e) {
 				e.printStackTrace();
-				XyDashboardPosterPlugin.LOGGER.error("{}出了一点小问题,跳过了一次数据收集","WorldDataService.getWorldInfo()");
+				XyDashboardPosterPlugin.LOGGER.error(I18N.getString("error.graf.async", "WorldDataService.getWorldInfo()"));
 			}
 		};
 		return wd;

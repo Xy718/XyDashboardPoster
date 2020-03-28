@@ -109,7 +109,7 @@ public class I18N {
             String value = getInstance().assetRb.getString(key);
             return MessageFormat.format(value, args);
         } else {
-            return key;
+            return key+"该I18N节点不存在";
         }
     }
 

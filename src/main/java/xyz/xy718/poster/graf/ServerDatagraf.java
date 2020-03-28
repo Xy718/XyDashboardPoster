@@ -1,13 +1,14 @@
 package xyz.xy718.poster.graf;
 
 
-import org.slf4j.Logger;
+import org.hyperic.sigar.SigarException;
 
 import xyz.xy718.poster.XyDashboardPosterPlugin;
 import xyz.xy718.poster.config.XyDashboardPosterConfig;
 import xyz.xy718.poster.model.ServerMemoryData;
 import xyz.xy718.poster.model.ServerTPSData;
 import xyz.xy718.poster.model.ServerTimeData;
+import xyz.xy718.poster.model.SystemCPUdata;
 import xyz.xy718.poster.service.ServerDataService;
 
 /**
@@ -35,20 +36,24 @@ public class ServerDatagraf extends Datagraf{
 					,(long)(config.getGrafMemoryInternal()*1000));
 		}
 		if(config.isUseUptime()) {
-			buildTask("memory"
+			buildTask("uptime"
 					, new UpTime()
 					,(long)(config.getGrafUptimeInternal()*1000)
 					,(long)(config.getGrafUptimeInternal()*1000));
+		}
+		if(config.isUseCPU()) {
+			buildTask("cpu"
+					, new CPU()
+					,(long)(config.getGrafCPUInternal()*1000)
+					,(long)(config.getGrafCPUInternal()*1000));
 		}
 	}
 
 	class TPS implements Work{
 		@Override
 		public void work() {
-			long startTime=System.currentTimeMillis();
 			ServerTPSData data=ServerDataService.getServerTPS(config.getTbNameServer());
 			dataList.add(data);
-			XyDashboardPosterPlugin.configLogger("TPS:{} 收集耗时：{}ms",data.getServerTPS(),(System.currentTimeMillis()-startTime));
 		}
 
 		@Override
@@ -80,4 +85,23 @@ public class ServerDatagraf extends Datagraf{
 			return "server-uptime";
 		}
 	}
+	class CPU implements Work{
+		@Override
+		public void work() {
+			SystemCPUdata data = null;
+			try {
+				data = ServerDataService.getSysCPU(config.getTbNameServer());
+			} catch (SigarException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			dataList.add(data);
+		}
+
+		@Override
+		public String workName() {
+			return "server-cpu";
+		}
+	}
+	
 }

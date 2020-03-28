@@ -4,22 +4,23 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Timer;
 
+import lombok.Getter;
 import xyz.xy718.poster.graf.WorldDatagraf;
 import xyz.xy718.poster.graf.XydatagrafManager;
 
 public class PosterManager {
 	private DataPoster dataPoster;
-	private XydatagrafManager datagraf;
+	@Getter private XydatagrafManager datagraf;
 	
 	public PosterManager(XyDashboardPosterPlugin plugin) {
-		datagraf=new XydatagrafManager(plugin);
-		dataPoster=new DataPoster(plugin);
+		this.datagraf=new XydatagrafManager(plugin);
+		this.dataPoster=new DataPoster(plugin);
 	}
 	
-	public static void stopAllPoster() {
-		
+	public void stopAllPoster() {
+		this.dataPoster.endPost();
 	}
-	public static void stopAllGraf() {
-		
+	public void stopAllGraf() {
+		this.datagraf.StopAllGraf();
 	}
 }

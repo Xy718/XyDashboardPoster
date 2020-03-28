@@ -30,6 +30,7 @@ import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 
 import lombok.Getter;
+import lombok.Setter;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
 import xyz.xy718.poster.annotation.RegisterCommand;
@@ -69,7 +70,7 @@ public class XyDashboardPosterPlugin {
 
 	@Getter private static XyDashboardPosterConfig mainConfig;
 
-	@Getter private static PosterManager posterManager;
+	@Getter @Setter private static PosterManager posterManager;
 	@Getter private static InfluxDBConnection influxDB;
 
     private static Instant gameStartedTime = null;
@@ -91,17 +92,11 @@ public class XyDashboardPosterPlugin {
     @Listener
     public void onGameStarting(GameInitializationEvent event) {
     	LOGGER.info(I18N.getString("plugin.starting",NAME));
-    	influxDB=new InfluxDBConnection(
-    			mainConfig.getUser()
-    			,mainConfig.getPassword()
-    			,mainConfig.getHost()+":"+mainConfig.getPort()
-    			,mainConfig.getDatabase()
-    			,mainConfig.getRetention_policy()
-    			);
+    	reloadInfluxDB();
     	try {
     		//通过注解注册指令
 			int access=registerCommandsByAnnotation(this.getClass(),this.container);
-			LOGGER.info("已注册{}条指令",access);
+			LOGGER.info(I18N.getString("plugin.starting.regcommands",access));
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -109,7 +104,7 @@ public class XyDashboardPosterPlugin {
 	}
     @Listener
     public void onServerStart(GameStartedServerEvent event) {
-    	LOGGER.info("服务器启动成功，{}也开始工作了~",NAME);
+    	LOGGER.info(I18N.getString("plugin.started",NAME));
     	Sponge.getScheduler().createSyncExecutor(this).submit(() -> this.gameStartedTime = Instant.now());
     	if(influxDB.ping()) {
     		//ping通才可以使用
@@ -121,7 +116,7 @@ public class XyDashboardPosterPlugin {
     
     @Listener
     public void onPluginsReload(GameReloadEvent event) {
-    	LOGGER.warn("{}重新加载~",NAME);
+    	LOGGER.warn(I18N.getString("plugin.reloadplugin",NAME));
     }
     
     @Listener
@@ -160,10 +155,10 @@ public class XyDashboardPosterPlugin {
 	/**
 	 * 加载语言文件
 	 */
-	private void loadI18N() {
+	public void loadI18N() {
    	 // init i18n service
         I18N.setLogger(LOGGER);
-        I18N.setPlugin(this);
+        I18N.setPlugin(XyDashboardPosterPlugin.get());
         String localeStr = mainConfig.getLang();
         if (localeStr == null || localeStr.isEmpty()) {
             localeStr = "zh_CN";
@@ -177,6 +172,17 @@ public class XyDashboardPosterPlugin {
 			LOGGER.info(msg,args);
 		}
 	}
+	
+	public static void reloadInfluxDB() {
+    	influxDB=new InfluxDBConnection(
+    			mainConfig.getUser()
+    			,mainConfig.getPassword()
+    			,mainConfig.getHost()+":"+mainConfig.getPort()
+    			,mainConfig.getDatabase()
+    			,mainConfig.getRetention_policy()
+    			);
+	}
+	
 	
     public static Optional<Instant> getGameStartedTime() {
         return Optional.ofNullable(gameStartedTime);
@@ -234,9 +240,25 @@ public class XyDashboardPosterPlugin {
 		childCommands.stream()
 			.filter(c->!map.containsKey(c.getAliases()[1]))
 			.forEach(c->{
-				map.put(c.getAliases()[1], c.getAliases()[0]);
-				getChild(c, childCommands, map);
-				top.getBuilder().child(c.getBuilder().build(), c.getAliases()[1]);
+				//判断我是不是主指令
+				if(top.isRoot()) {
+					//是,那就判断我的0是不是你的0
+					if(top.getAliases()[0].equals(c.getAliases()[0])) {
+						top.getBuilder().child(c.getBuilder().build(), c.getAliases()[1]);
+						map.put(c.getAliases()[1], c.getAliases()[0]);
+					}
+				}else {
+					//不是，我也是个弟弟，那就判断我的1是不是你的0
+					if(top.getAliases()[1].equals(c.getAliases()[0])) {
+						top.getBuilder().child(c.getBuilder().build(), c.getAliases()[1]);
+						map.put(c.getAliases()[1], c.getAliases()[0]);
+					}
+				}
+				//我完事了，你呢？
+				if(!c.equals(top)) {//禁止套娃！
+					getChild(c, childCommands, map);
+				}
 			});
 	}
+	
 }

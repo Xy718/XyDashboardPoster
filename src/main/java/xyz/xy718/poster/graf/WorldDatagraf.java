@@ -5,6 +5,7 @@ import java.util.List;
 import org.slf4j.Logger;
 
 import xyz.xy718.poster.XyDashboardPosterPlugin;
+import xyz.xy718.poster.config.I18N;
 import xyz.xy718.poster.config.XyDashboardPosterConfig;
 import xyz.xy718.poster.model.WorldChunkCountData;
 import xyz.xy718.poster.model.WorldEntityData;
@@ -44,15 +45,13 @@ public class WorldDatagraf extends Datagraf{
 	class ChunkCount implements Work{
 		@Override
 		public void work() {
-			long startTime=System.currentTimeMillis();
 			List<WorldChunkCountData> data=WorldDataService.getWorldInfo(config.getTbNameWorld());
 			dataList.addAll(data);
-			String logs="区块数量";
+			String logs="";
 			for(WorldChunkCountData w:data){
 				logs+="-"+w.getWorldName()+":"+w.getChunkCount();
 			}
-			XyDashboardPosterPlugin.configLogger(logs);
-			XyDashboardPosterPlugin.configLogger("区块数量收集耗时："+(System.currentTimeMillis()-startTime)+"ms");
+			XyDashboardPosterPlugin.configLogger(I18N.getString("debug.log.chunk")+logs);
 		}
 
 		@Override
@@ -65,11 +64,11 @@ public class WorldDatagraf extends Datagraf{
 		public void work() {
 			List<WorldEntityData> data=WorldDataService.getWorldEntityInfo(config.getTbNameWorld());
 			dataList.addAll(data);
-			String logs="实体数量";
+			String logs="";
 			for(WorldEntityData w:data){
 				logs+="-"+w.getWorldName()+":"+w.getEntityCount();
 			}
-			XyDashboardPosterPlugin.configLogger(logs);
+			XyDashboardPosterPlugin.configLogger(I18N.getString("debug.log.entity")+logs);
 		}
 
 		@Override
@@ -82,11 +81,11 @@ public class WorldDatagraf extends Datagraf{
 		public void work() {
 			List<WorldTileEntityData> data=WorldDataService.getWorldTileEntityInfo(config.getTbNameWorld());
 			dataList.addAll(data);
-			String logs="TE数量";
+			String logs="";
 			for(WorldTileEntityData w:data){
 				logs+="-"+w.getWorldName()+":"+w.getEntityCount();
 			}
-			XyDashboardPosterPlugin.configLogger(logs);
+			XyDashboardPosterPlugin.configLogger(I18N.getString("debug.log.tileentity")+logs);
 		}
 
 		@Override

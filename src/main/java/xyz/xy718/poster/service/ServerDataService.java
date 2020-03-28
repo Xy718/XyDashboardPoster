@@ -3,14 +3,21 @@ package xyz.xy718.poster.service;
 import java.lang.management.ManagementFactory;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
+import org.hyperic.sigar.CpuPerc;
+import org.hyperic.sigar.Sigar;
+import org.hyperic.sigar.SigarException;
 import org.spongepowered.api.Sponge;
 
 import xyz.xy718.poster.XyDashboardPosterPlugin;
 import xyz.xy718.poster.model.ServerMemoryData;
 import xyz.xy718.poster.model.ServerTPSData;
 import xyz.xy718.poster.model.ServerTimeData;
+import xyz.xy718.poster.model.SystemCPUdata;
+import xyz.xy718.poster.util.SystemUtil;
 import xyz.xy718.poster.util.Util;
 
 public class ServerDataService {
@@ -51,6 +58,21 @@ public class ServerDataService {
             		,Util.getTimeStringFromSeconds(uptime.getSeconds()));
         });
 		return std;
+	}
+	
+	/**
+	 * 获取cpu使用情况
+	 * @param measurement
+	 * @return
+	 * @throws SigarException
+	 */
+	public static SystemCPUdata getSysCPU(String measurement) throws SigarException {
+		CpuPerc[] c=SystemUtil.pluginCpuGraf();
+		double[] cpus=new double[c.length];
+		for(int i=0;i<cpus.length;i++) {
+			cpus[i]=c[i].getCombined();
+		}
+		return new SystemCPUdata(measurement,cpus);
 	}
 	
 }
