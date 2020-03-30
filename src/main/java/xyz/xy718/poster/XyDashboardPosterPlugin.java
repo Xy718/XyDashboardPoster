@@ -9,8 +9,12 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.Callable;
 
 import org.apache.commons.lang3.LocaleUtils;
+import org.bstats.sponge.Metrics;
+import org.bstats.sponge.Metrics2;
+import org.bstats.sponge.Metrics2.Factory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spongepowered.api.Sponge;
@@ -72,9 +76,10 @@ public class XyDashboardPosterPlugin {
 
 	@Getter @Setter private static PosterManager posterManager;
 	@Getter private static InfluxDBConnection influxDB;
-
+    
     private static Instant gameStartedTime = null;
     
+    @Inject
     public XyDashboardPosterPlugin() {
     	if (instance != null)
 			throw new IllegalStateException();
@@ -92,6 +97,7 @@ public class XyDashboardPosterPlugin {
     @Listener
     public void onGameStarting(GameInitializationEvent event) {
     	LOGGER.info(I18N.getString("plugin.starting",NAME));
+    	addMetricsInformation();
     	reloadInfluxDB();
     	try {
     		//通过注解注册指令
@@ -112,6 +118,23 @@ public class XyDashboardPosterPlugin {
     	}else {
     		LOGGER.error(I18N.getString("error.influxdb.ping"));
     	}
+    }
+    
+    private void addMetricsInformation()
+    {
+    	/*
+    	metrics.addCustomChart(new Metrics2.SimplePie("pluginVersion", new Callable<String>() {
+            @Override
+            public String call() throws Exception {
+                return XyDashboardPosterPlugin.VERSION;
+            }
+        }));
+    	metrics.addCustomChart(new Metrics2.SingleLineChart("servers_using_panels", new Callable<Integer>() {
+            @Override
+            public Integer call() throws Exception {
+                return posterManager.getDatagraf().workedGraf();
+            }
+        }));*/
     }
     
     @Listener

@@ -68,10 +68,15 @@ public class DataPoster {
 							Map<String, String> t = data.getTagMap();
 							Map<String, Object> f = data.getFieldMap();
 							// 一条记录值
-							Point point = influxDBConnection.pointBuilder(
-									data.getMeasurement(),data.getTime(), t, f);
-							// 将记录添加到batchPoints中
-							batchPoints.point(point);
+							try {
+								Point point = influxDBConnection.pointBuilder(
+										data.getMeasurement(),data.getTime(), t, f);
+								// 将记录添加到batchPoints中
+								batchPoints.point(point);
+							} catch (Exception e) {
+								LOGGER.error(I18N.getString("error.post.pointbuilder", e.getMessage()));
+								LOGGER.debug("", e);
+							}
 						}
 						
 						// 将不同的batchPoints序列化后，一次性写入数据库，提高写入速度

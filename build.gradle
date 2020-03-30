@@ -31,9 +31,14 @@ blossom {
 
 repositories {
     mavenCentral()
+    maven {  
+             name "CodeMC"  
+             url "https://repo.codemc.org/repository/maven-public"  
+         }  
 }
 
 dependencies {
+    compile 'org.bstats:bstats-sponge:1.7'
 	compile 'org.fusesource:sigar:1.6.4'
 	compile 'com.squareup.okhttp3:okhttp:3.6.0'
 	compile 'com.squareup.retrofit2:retrofit:2.3.0'
