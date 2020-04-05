@@ -44,6 +44,9 @@ public class WorldDatagraf extends Datagraf{
 		@Override
 		public void work() {
 			List<WorldChunkCountData> data=WorldDataService.getWorldInfo(config.getTbNameWorld());
+			if(dataList.contains(null)) {
+				XyDashboardPosterPlugin.LOGGER.info("ChunkCount-NULL");
+			}
 			dataList.addAll(data);
 			String logs="";
 			for(WorldChunkCountData w:data){
@@ -61,6 +64,9 @@ public class WorldDatagraf extends Datagraf{
 		@Override
 		public void work() {
 			List<WorldEntityData> data=WorldDataService.getWorldEntityInfo(config.getTbNameWorld());
+			if(dataList.contains(null)) {
+				XyDashboardPosterPlugin.LOGGER.info("EntityCount-NULL");
+			}
 			dataList.addAll(data);
 			String logs="";
 			for(WorldEntityData w:data){
@@ -78,6 +84,9 @@ public class WorldDatagraf extends Datagraf{
 		@Override
 		public void work() {
 			List<WorldTileEntityData> data=WorldDataService.getWorldTileEntityInfo(config.getTbNameWorld());
+			if(dataList.contains(null)) {
+				XyDashboardPosterPlugin.LOGGER.info("TileEntityCount-NULL");
+			}
 			dataList.addAll(data);
 			String logs="";
 			for(WorldTileEntityData w:data){
